@@ -15,6 +15,8 @@ namespace LoadTester
         {
             InitializeComponent();
             btnFill.Text = "Add " + Environment.ProcessorCount + " threads";
+
+            NativeMethods.DisableProcessWindowsGhosting();
             ThreadsManager.Init();
         }
 

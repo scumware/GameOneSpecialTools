@@ -13,6 +13,8 @@ namespace LoadTester
         [STAThread]
         static void Main()
         {
+            NativeMethods.SetThreadPriority(NativeMethods.GetCurrentThread(), ThreadPriority.THREAD_PRIORITY_HIGHEST);
+
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault( false );
             Application.Run( new MainForm() );

@@ -7,10 +7,6 @@
         /// </summary>
         private System.ComponentModel.IContainer components = null;
 
-        public ThreadsManager ThreadsManager
-        {
-            get { return m_threadsManager; }
-        }
 
         /// <summary>
         /// Clean up any resources being used.
@@ -289,7 +285,6 @@
         private System.Windows.Forms.FlowLayoutPanel flowLayoutPanel;
         private System.Windows.Forms.DataVisualization.Charting.Chart chart1;
         private System.Windows.Forms.SplitContainer splitContainer;
-        private readonly ThreadsManager m_threadsManager = new ThreadsManager();
     }
 }
 

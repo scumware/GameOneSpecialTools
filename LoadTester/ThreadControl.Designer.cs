@@ -7,18 +7,7 @@
         /// </summary>
         private System.ComponentModel.IContainer components = null;
 
-        /// <summary> 
-        /// Clean up any resources being used.
-        /// </summary>
-        /// <param name="disposing">true if managed resources should be disposed; otherwise, false.</param>
-        protected override void Dispose( bool disposing )
-        {
-            if (disposing && (components != null))
-            {
-                components.Dispose();
-            }
-            base.Dispose( disposing );
-        }
+
 
         #region Component Designer generated code
 
@@ -28,12 +17,12 @@
         /// </summary>
         private void InitializeComponent()
         {
-            this.tableMain = new DoubleBufferedTableLayoutPanel();
+            this.tableMain = new LoadTester.DoubleBufferedTableLayoutPanel();
             this.pictureBox1 = new System.Windows.Forms.PictureBox();
             this.flowPanelAfinnity = new System.Windows.Forms.FlowLayoutPanel();
             this.btnStartStop = new System.Windows.Forms.Button();
-            this.labeledComboPriority = new LabeledCombo();
-            this.labeledComboLoad = new LabeledCombo();
+            this.labeledComboPriority = new LoadTester.LabeledCombo();
+            this.labeledComboLoad = new LoadTester.LabeledCombo();
             this.tableMain.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).BeginInit();
             this.SuspendLayout();
@@ -110,7 +99,9 @@
             // 
             this.labeledComboPriority.Combo.BackColor = System.Drawing.Color.Black;
             this.labeledComboPriority.Combo.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.labeledComboPriority.Combo.DropDownWidth = 160;
             this.labeledComboPriority.Combo.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.labeledComboPriority.Combo.Font = new System.Drawing.Font("Courier New", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
             this.labeledComboPriority.Combo.ForeColor = System.Drawing.Color.LimeGreen;
             this.labeledComboPriority.Combo.Location = new System.Drawing.Point(109, 3);
             this.labeledComboPriority.Combo.Name = "comboBox";
@@ -141,7 +132,9 @@
             // 
             this.labeledComboLoad.Combo.BackColor = System.Drawing.Color.Black;
             this.labeledComboLoad.Combo.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.labeledComboLoad.Combo.DropDownWidth = 160;
             this.labeledComboLoad.Combo.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.labeledComboLoad.Combo.Font = new System.Drawing.Font("Courier New", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
             this.labeledComboLoad.Combo.ForeColor = System.Drawing.Color.LimeGreen;
             this.labeledComboLoad.Combo.Location = new System.Drawing.Point(109, 3);
             this.labeledComboLoad.Combo.Name = "comboBox";

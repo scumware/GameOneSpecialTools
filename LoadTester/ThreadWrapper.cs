@@ -2,22 +2,34 @@
 using System.ComponentModel;
 using System.Diagnostics;
 using System.Linq;
+using System.Runtime.CompilerServices;
+using System.Runtime.ConstrainedExecution;
 using System.Runtime.InteropServices;
+using System.Security;
 using System.Text;
 using System.Threading;
 using LoadTester.Annotations;
 
 namespace LoadTester
 {
-    public class ThreadWrapper :INotifyPropertyChanged
+    public class ThreadWrapper : INotifyPropertyChanged
     {
-        private Thread m_thread;
-        private IntPtr m_threadHandle;
-        private volatile bool m_looper;
-        private volatile bool m_stopped;
+        public delegate void LoopAction([MarshalAs(UnmanagedType.Bool)] ref bool p_flag);
+
+        private static readonly LoopAction s_pause;
+        private volatile LoadType m_loadType;
+        private long m_looped;
+        private bool m_looper;
+        private ThreadPriority m_priority;
         private volatile bool m_restartLoop;
         private volatile ThreadState m_state;
-        private volatile LoadType m_loadType;
+        private volatile bool m_stopped;
+        private IntPtr m_threadHandle;
+
+        static ThreadWrapper()
+        {
+            s_pause = GetPauseDelegate();
+        }
 
 
         public ThreadWrapper()
@@ -26,55 +38,22 @@ namespace LoadTester
             Afinnity = UInt32.MaxValue;
             AfinnityArray.SetCount(Environment.ProcessorCount);
             AfinnityArray.Changed += OnAfinnityChanged;
-            m_stopped = true;
+
             Reinit();
-        }
 
-        private void OnAfinnityChanged(object p_sender, EventArgs p_args)
-        {
-            SetThreadAffinityMask(m_threadHandle, (UIntPtr) AfinnityArray.Value);
-            OnPropertyChanged("Afinnity");
-        }
-
-        private void Reinit()
-        {
-            m_thread = new Thread(ThreadFunc);
-            m_threadHandle = (IntPtr) (-1);
+            Priority = ThreadPriority.THREAD_PRIORITY_LOWEST;
+            m_loadType = LoadType.EmptyLoop;
         }
 
         public ulong Afinnity
         {
             get { return AfinnityArray.Value; }
-            set
-            {
-                AfinnityArray.Value = value;
-            }
+            set { AfinnityArray.Value = value; }
         }
 
         public BitArray AfinnityArray { get; private set; }
-        /*
-        public bool[] AfinnityArray
-        {
-            get { return m_afinnityArray; }
-            set
-            {
-                m_afinnityArray = value;
 
-                uint newAfinnity = 0;
-                uint mask = 1;
-                for (int i = 0; i < m_afinnityArray.Length; i++)
-                {
-                    var flag = m_afinnityArray[i];
-                    mask = mask << 1;
-                    if (flag)
-                    {
-                        newAfinnity = newAfinnity | mask;
-                    }
-                }
-                Afinnity = newAfinnity;
-            }
-        }
-        */
+
         public ThreadState State
         {
             get { return m_state; }
@@ -87,23 +66,87 @@ namespace LoadTester
 
         public ThreadPriority Priority
         {
-            get { return m_thread.Priority; }
-            set { m_thread.Priority = value; }
+            get { return m_priority; }
+            set
+            {
+                m_priority = value;
+                RestartLoop();
+            }
         }
 
-        public LoadType LoadType
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        private void RestartLoop()
+        {
+            if (false == m_stopped)
+            {
+                m_restartLoop = true;
+                Thread.MemoryBarrier();
+                m_looper = false;
+            }
+        }
+
+        public
+            LoadType LoadType
         {
             get { return m_loadType; }
             set
             {
                 m_loadType = value;
-                m_restartLoop = true;
-                Thread.MemoryBarrier();
-                m_looper = false;
-                GC.Collect();
-                GC.Collect();
-                OnPropertyChanged( "LoadType" );
+                RestartLoop();
+
+                OnPropertyChanged("LoadType");
             }
+        }
+
+        public long Looped
+        {
+            get { return m_looped; }
+        }
+
+
+        public event PropertyChangedEventHandler PropertyChanged;
+
+        public static LoopAction GetPauseDelegate()
+        {
+            // @formatter:off
+            byte[] codeBytes2 = new byte[]
+            {
+
+                0x90                //nop
+                , 0xF3, 0x90        //f390   pause
+                , 0x80, 0x3a, 0x00  //803a00 cmp     byte ptr [rdx],0
+                , 0x75, 0xF9,       //75F9   jne ->pause command
+                0xc3                //c3     ret
+            };
+            // @formatter:on
+
+            var code = codeBytes2;
+
+            var codePointer = NativeMethods.VirtualAlloc(
+                IntPtr.Zero,
+                new UIntPtr((uint) code.Length),
+                NativeMethods.AllocationType.COMMIT | NativeMethods.AllocationType.RESERVE,
+                NativeMethods.MemoryProtection.EXECUTE_READWRITE
+            );
+
+            Marshal.Copy(code, 0, codePointer, code.Length);
+
+            var cpuPauseDelgate =
+                (LoopAction) Marshal.GetDelegateForFunctionPointer(codePointer, typeof(LoopAction));
+
+            return cpuPauseDelgate;
+        }
+
+        private void OnAfinnityChanged(object p_sender, EventArgs p_args)
+        {
+            NativeMethods.SetThreadAffinityMask(m_threadHandle, (UIntPtr) AfinnityArray.Value);
+            OnPropertyChanged("Afinnity");
+        }
+
+        private void Reinit()
+        {
+            m_threadHandle = (IntPtr) (-1);
+            m_stopped = true;
         }
 
         public void Start()
@@ -113,7 +156,19 @@ namespace LoadTester
 
             Reinit();
 
-            m_thread.Start();
+            m_threadHandle = (IntPtr) StartThread(ThreadFunc);
+        }
+
+        unsafe uint StartThread(ThreadStart ThreadFunc, int StackSize = 0)
+        {
+            uint i = 0;
+            uint* lpParam = &i;
+            uint lpThreadID = 0;
+
+            uint dwHandle = NativeMethods.CreateThread(null, (uint) StackSize, ThreadFunc, lpParam, 0, out lpThreadID);
+            if (dwHandle == 0)
+                throw new Exception("Unable to create thread!");
+            return dwHandle;
         }
 
         public void Stop()
@@ -127,85 +182,63 @@ namespace LoadTester
 
         protected void ThreadFunc()
         {
-            Thread.BeginThreadAffinity();
-
             m_stopped = false;
-            m_looper = true;
             State = ThreadState.Started;
 
-            var threadId = GetCurrentThreadId();
-            m_threadHandle =  OpenThread(ThreadAccess.QUERY_INFORMATION | ThreadAccess.SET_INFORMATION, false, threadId);
-            SetThreadAffinityMask( m_threadHandle, (UIntPtr)Afinnity );
-
-            Loop:
-            switch (m_loadType)
+            NativeMethods.SetThreadAffinityMask(m_threadHandle, (UIntPtr) Afinnity);
+            Thread.BeginCriticalRegion();
+            do
             {
-                case LoadType.EmptyLoop:
-                    while (m_looper) ;
-                    break;
+                NativeMethods.SetThreadPriority(m_threadHandle, m_priority);
 
-                case LoadType.MemoryPressure:
-                    while (m_looper)
-                        MemoryPressureFunction();
-                    break;
-
-                default:
-                    throw new ArgumentOutOfRangeException();
-            }
-            if (m_restartLoop)
-            {
                 m_looper = true;
+                Thread.MemoryBarrier();
                 m_restartLoop = false;
-                goto Loop;
-            }
 
-            m_stopped = true;
+                switch (m_loadType)
+                {
+                    case LoadType.EmptyLoop:
+                        while (m_looper) ;
+                        break;
+
+                    case LoadType.SpinWait:
+                        // while (m_looper.Value) PAUSE
+                        s_pause(ref m_looper);
+                        break;
+
+                    case LoadType.MemoryPressure:
+                        while (m_looper) MemoryPressureFunction();
+                        break;
+
+                    default:
+                        throw new ArgumentOutOfRangeException();
+                }
+            } while (m_restartLoop);
+
             State = ThreadState.Stopped;
-            m_threadHandle = (IntPtr) (-1);
-            Thread.EndThreadAffinity();
-        }
+            Thread.EndCriticalRegion();
 
-        const int OneGb = 1024 * 1024 * 1024;
-        const int s32k = 32 * 1024;
+            NativeMethods.CloseHandle(m_threadHandle);
+            Reinit();
+        }
 
         private void MemoryPressureFunction()
         {
-            Size32K[] array1G = new Size32K[OneGb/s32k];
+            Size32K[] array1G = new Size32K[GeneralConstants.OneGb/GeneralConstants.S32K];
             for (int i = 0; i < array1G.Length; i++)
             {
                 var size32K = array1G[i] = new Size32K();
                 size32K.Field000.Field000.Field000.Field000 = ulong.MaxValue;
-                size32K.Field007 = size32K.Field006 = size32K.Field005 = size32K.Field004 = size32K.Field003 = size32K.Field002 = size32K.Field001 = size32K.Field000;
+                size32K.Field007
+                    = size32K.Field006
+                        = size32K.Field005
+                            = size32K.Field004
+                                = size32K.Field003
+                                    = size32K.Field002
+                                        = size32K.Field001
+                                            = size32K.Field000;
             }
-            GC.Collect();
         }
-
-        [DllImport( "kernel32.dll" )]
-        static extern UIntPtr SetThreadAffinityMask( IntPtr hThread,
-           UIntPtr dwThreadAffinityMask );
-        
-        [DllImport( "kernel32.dll" )]
-        static extern uint GetCurrentThreadId();
-
-        [DllImport( "kernel32.dll", SetLastError = true )]
-        static extern IntPtr OpenThread( ThreadAccess dwDesiredAccess, bool bInheritHandle,
-           uint dwThreadId );
-
-        [Flags]
-        public enum ThreadAccess :int
-        {
-            TERMINATE = (0x0001),
-            SUSPEND_RESUME = (0x0002),
-            GET_CONTEXT = (0x0008),
-            SET_CONTEXT = (0x0010),
-            SET_INFORMATION = (0x0020),
-            QUERY_INFORMATION = (0x0040),
-            SET_THREAD_TOKEN = (0x0080),
-            IMPERSONATE = (0x0100),
-            DIRECT_IMPERSONATION = (0x0200)
-        }
-
-        public event PropertyChangedEventHandler PropertyChanged;
 
         [NotifyPropertyChangedInvocator]
         protected virtual void OnPropertyChanged(string p_propertyName)

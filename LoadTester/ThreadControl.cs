@@ -19,12 +19,35 @@ namespace LoadTester
             InitializeComponent();
             BackColor = System.Drawing.Color.FromArgb(32,10,20,0);
 
-            labeledComboPriority.Combo.DataSource = Enum.GetValues(typeof(ThreadPriority));
-            labeledComboPriority.Combo.SelectedItem = ThreadPriority.Normal;
+            labeledComboPriority.Combo.ValueMember = "Value";
+            labeledComboPriority.Combo.DisplayMember = "DisplayName";
+            labeledComboPriority.Combo.DataSource = ThreadPriorityWrapper.AllValues;
+
+            labeledComboPriority.Combo.SelectedItem = ThreadPriority.THREAD_PRIORITY_LOWEST;
 
             labeledComboLoad.Combo.DataSource = Enum.GetValues( typeof( LoadType ) );
             labeledComboLoad.Combo.SelectedItem = LoadType.EmptyLoop;
+            this.ResetBackColor();
+        }
 
+        /// <summary> 
+        /// Clean up any resources being used.
+        /// </summary>
+        /// <param name="disposing">true if managed resources should be disposed; otherwise, false.</param>
+        protected override void Dispose( bool disposing )
+        {
+            if (disposing)
+            {
+                if (m_wrapper != null)
+                {
+                    m_wrapper.PropertyChanged -= ThreadWrapperPropertyChanged;
+                }
+                if (components != null)
+                {
+                    components.Dispose();
+                }
+            }
+            base.Dispose( disposing );
         }
 
         public void UpdateStateView(ThreadState value)
@@ -60,7 +83,7 @@ namespace LoadTester
             if (InvokeRequired)
             {
                 var action = new Action(()=>ThreadWrapperPropertyChanged(p_sender, p_propertyChangedEventArgs));
-                Invoke(action);
+                BeginInvoke(action);
                 return;
             }
 
@@ -142,7 +165,7 @@ namespace LoadTester
         private void labeledComboPriority_SelectedValueChanged( object sender, EventArgs e )
         {
             if (null == m_wrapper) return;
-            m_wrapper.Priority = (ThreadPriority) labeledComboPriority.Combo.SelectedItem;
+            m_wrapper.Priority = (ThreadPriority) labeledComboPriority.Combo.SelectedValue;
         }
 
         private void labeledComboLoad_SelectedValueChanged( object sender, EventArgs e )

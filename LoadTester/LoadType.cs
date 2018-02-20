@@ -8,6 +8,7 @@ namespace LoadTester
     public enum LoadType
     {
         EmptyLoop,
+        SpinWait,
         MemoryPressure
     }
 }

@@ -2,11 +2,11 @@ using System.Collections.Generic;
 
 namespace LoadTester
 {
-    public class ThreadsManager
+    public static class ThreadsManager
     {
-        private IList<ThreadWrapper> m_threadWrappers;
+        private static IList<ThreadWrapper> m_threadWrappers;
 
-        public void StartAll()
+        public static void StartAll()
         {
             foreach (var threadWrapper in m_threadWrappers)
             {
@@ -14,7 +14,7 @@ namespace LoadTester
             }
         }
 
-        public void StopAll()
+        public static void StopAll()
         {
             foreach (var threadWrapper in m_threadWrappers)
             {
@@ -22,14 +22,14 @@ namespace LoadTester
             }
         }
 
-        public void Init()
+        public static void Init()
         {
-            this.m_threadWrappers = new List<ThreadWrapper>();
+            m_threadWrappers = new List<ThreadWrapper>();
         }
 
-        public void AddThread(ThreadWrapper threadWrapper)
+        public static void AddThread(ThreadWrapper threadWrapper)
         {
-            this.m_threadWrappers.Add(threadWrapper);
+            m_threadWrappers.Add(threadWrapper);
         }
     }
 }
