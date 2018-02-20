@@ -121,7 +121,6 @@
     <Compile Include="ThreadsManager.cs" />
     <Compile Include="ThreadState.cs" />
     <Compile Include="ThreadWrapper.cs" />
-    <Compile Include="VolatileWrapper.cs" />
     <EmbeddedResource Include="MainForm.resx">
       <DependentUpon>MainForm.cs</DependentUpon>
     </EmbeddedResource>
