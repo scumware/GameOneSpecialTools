@@ -27,9 +27,17 @@ namespace LoadTester
             m_threadWrappers = new List<ThreadWrapper>();
         }
 
-        public static void AddThread(ThreadWrapper threadWrapper)
+        public static ThreadWrapper[] AddThreads(int p_count)
         {
-            m_threadWrappers.Add(threadWrapper);
+            var result = new ThreadWrapper[p_count];
+            for (int i = 0; i < p_count; i++)
+            {
+                 
+                var newThreadWrapper = new ThreadWrapper();
+                result[i] = newThreadWrapper;
+                m_threadWrappers.Add(newThreadWrapper);
+            }
+            return result;
         }
     }
 }
