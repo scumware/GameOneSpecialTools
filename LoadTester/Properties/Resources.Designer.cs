@@ -93,6 +93,16 @@ namespace LoadTester.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
+        internal static System.Drawing.Bitmap sleeping {
+            get {
+                object obj = ResourceManager.GetObject("sleeping", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
         internal static System.Drawing.Bitmap Started {
             get {
                 object obj = ResourceManager.GetObject("Started", resourceCulture);

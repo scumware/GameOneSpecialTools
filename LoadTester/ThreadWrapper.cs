@@ -12,7 +12,7 @@ using LoadTester.Annotations;
 
 namespace LoadTester
 {
-    public class ThreadWrapper : INotifyPropertyChanged
+    public class ThreadWrapper : INotifyPropertyChanged, IDisposable
     {
         public double[] Speeds;
 
@@ -27,6 +27,14 @@ namespace LoadTester
         private volatile ThreadState m_state;
         private volatile bool m_stopped;
         private IntPtr m_threadHandle;
+        private UInt32 m_threadId;
+
+        /// <summary>
+        /// Magic! Do not remove
+        /// </summary>
+        private ThreadStart m_threadFunctionDelegeteReference;
+
+        private bool m_disposed;
 
         static ThreadWrapper()
         {
@@ -51,7 +59,9 @@ namespace LoadTester
             Reinit();
 
             Priority = ThreadPriority.THREAD_PRIORITY_LOWEST;
-            m_loadType = LoadType.EmptyLoop;
+            m_loadType = LoadType.Sleep;
+            State = ThreadState.Stopped;
+            CreateNativeThread(true);
         }
 
         public ulong Afinnity
@@ -112,6 +122,16 @@ namespace LoadTester
             get { return m_looped; }
         }
 
+        public uint ThreadId
+        {
+            get { return m_threadId; }
+            private set
+            {
+                m_threadId = value;
+                OnPropertyChanged("ThreadId");
+            }
+        }
+
 
         public event PropertyChangedEventHandler PropertyChanged;
 
@@ -163,30 +183,70 @@ namespace LoadTester
             if (State == ThreadState.Started)
                 return;
 
-            Reinit();
+            if (State == ThreadState.Stopped)
+            {
+                Reinit();
 
-            m_threadHandle = (IntPtr) StartThread(ThreadFunc);
+                CreateNativeThread(false);
+            }
+            else
+            {
+                NativeMethods.ResumeThread((uint) m_threadHandle);
+            }
         }
 
-        unsafe uint StartThread(ThreadStart ThreadFunc, int StackSize = 0)
+        private void CreateNativeThread(bool p_createSuspended)
         {
+            uint lpThreadId;
+            m_threadHandle = (IntPtr) StartThread(ThreadFunc, out lpThreadId, 0, p_createSuspended);
+            ThreadId = lpThreadId;
+        }
+
+
+        unsafe uint StartThread(ThreadStart p_threadFunc, out uint p_lpThreadId, int StackSize = 0, bool p_createSuspended = false)
+        {
+            m_threadFunctionDelegeteReference = p_threadFunc;
+
             uint i = 0;
             uint* lpParam = &i;
-            uint lpThreadID = 0;
 
-            uint dwHandle = NativeMethods.CreateThread(null, (uint) StackSize, ThreadFunc, lpParam, 0, out lpThreadID);
+            var dwCreationFlags = NativeMethods.ThreadCreationFlags.CREATE_NORMAL;
+            if (p_createSuspended)
+            {
+                dwCreationFlags |= NativeMethods.ThreadCreationFlags.CREATE_SUSPENDED;
+            }
+            uint dwHandle = NativeMethods.CreateThread(null, (uint) StackSize, p_threadFunc, lpParam, dwCreationFlags, out p_lpThreadId);
             if (dwHandle == 0)
                 throw new Exception("Unable to create thread!");
+
+            if (p_createSuspended)
+            {
+                State = ThreadState.Suspended;
+            }
             return dwHandle;
         }
 
-        public void Stop()
+        public void Stop(bool p_wait = true)
         {
-            if (State == ThreadState.Stopped)
-                return;
+            switch (State)
+            {
+                case ThreadState.Stopped:
+                    return;
 
-            m_looper = false;
-            while (false == m_stopped) ;
+                case ThreadState.Suspended:
+                    m_looper = m_restartLoop = false;
+
+                    NativeMethods.ResumeThread(m_threadId);
+                    while (p_wait  &&  (false == m_looper)) 
+                        Thread.SpinWait(10);
+                    break;
+
+                case ThreadState.Started:
+                    m_looper = false;
+                    while (p_wait && (false == m_stopped))
+                        Thread.SpinWait(10);
+                    break;
+            }
         }
 
         protected void ThreadFunc()
@@ -206,8 +266,25 @@ namespace LoadTester
 
                 switch (m_loadType)
                 {
+                    case LoadType.YieldExecution:
+                        while (m_looper)
+                        {
+                            NativeMethods.SwitchToThread();
+                            ++m_looped;
+                        }
+                        break;
+
+                    case LoadType.Sleep:
+                        while (m_looper)
+                        {
+                            Thread.Sleep(1);
+                            ++m_looped;
+                        }
+                        break;
+
                     case LoadType.EmptyLoop:
-                        while (m_looper) ;
+                        while (m_looper)
+                            ++m_looped;
                         break;
 
                     case LoadType.SpinWait:
@@ -216,7 +293,11 @@ namespace LoadTester
                         break;
 
                     case LoadType.MemoryPressure:
-                        while (m_looper) MemoryPressureFunction();
+                        while (m_looper)
+                        {
+                            MemoryPressureFunction();
+                            ++m_looped;
+                        }
                         break;
 
                     default:
@@ -255,6 +336,16 @@ namespace LoadTester
             var handler = PropertyChanged;
             if (handler != null)
                 handler(this, new PropertyChangedEventArgs(p_propertyName));
+        }
+
+        public void Dispose()
+        {
+            if (m_disposed)
+                return;
+
+            GC.SuppressFinalize(this);
+            m_disposed = true;
+            Stop();
         }
     }
 }

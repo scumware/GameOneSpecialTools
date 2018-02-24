@@ -30,9 +30,10 @@
         private void InitializeComponent()
         {
             this.components = new System.ComponentModel.Container();
-            System.Windows.Forms.DataVisualization.Charting.ChartArea chartArea5 = new System.Windows.Forms.DataVisualization.Charting.ChartArea();
-            System.Windows.Forms.DataVisualization.Charting.Legend legend5 = new System.Windows.Forms.DataVisualization.Charting.Legend();
+            System.Windows.Forms.DataVisualization.Charting.ChartArea chartArea1 = new System.Windows.Forms.DataVisualization.Charting.ChartArea();
+            System.Windows.Forms.DataVisualization.Charting.Legend legend1 = new System.Windows.Forms.DataVisualization.Charting.Legend();
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(MainForm));
+            this.timer = new System.Windows.Forms.Timer(this.components);
             this.tableMain = new LoadTester.DoubleBufferedTableLayoutPanel();
             this.splitContainer = new System.Windows.Forms.SplitContainer();
             this.flowLayoutPanel = new System.Windows.Forms.FlowLayoutPanel();
@@ -42,7 +43,6 @@
             this.btnStart = new System.Windows.Forms.Button();
             this.btnAdd = new System.Windows.Forms.Button();
             this.btnFill = new System.Windows.Forms.Button();
-            this.timer = new System.Windows.Forms.Timer(this.components);
             this.tableMain.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.splitContainer)).BeginInit();
             this.splitContainer.Panel1.SuspendLayout();
@@ -51,6 +51,11 @@
             ((System.ComponentModel.ISupportInitialize)(this.chart1)).BeginInit();
             this.tableBottom.SuspendLayout();
             this.SuspendLayout();
+            // 
+            // timer
+            // 
+            this.timer.Interval = 1000;
+            this.timer.Tick += new System.EventHandler(this.timer_Tick);
             // 
             // tableMain
             // 
@@ -112,39 +117,39 @@
             // 
             this.chart1.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(52)))), ((int)(((byte)(46)))), ((int)(((byte)(46)))), ((int)(((byte)(46)))));
             this.chart1.BorderlineColor = System.Drawing.Color.Red;
-            chartArea5.AxisX.LabelStyle.ForeColor = System.Drawing.Color.YellowGreen;
-            chartArea5.AxisX.LineColor = System.Drawing.Color.Green;
-            chartArea5.AxisX.MajorGrid.LineColor = System.Drawing.Color.Green;
-            chartArea5.AxisX.MajorGrid.LineDashStyle = System.Windows.Forms.DataVisualization.Charting.ChartDashStyle.Dot;
-            chartArea5.AxisX.MajorTickMark.LineColor = System.Drawing.Color.DarkGreen;
-            chartArea5.AxisX.MinorGrid.LineColor = System.Drawing.Color.Bisque;
-            chartArea5.AxisX.MinorTickMark.LineColor = System.Drawing.Color.DimGray;
-            chartArea5.AxisX.ScaleBreakStyle.LineColor = System.Drawing.Color.DarkOliveGreen;
-            chartArea5.AxisX.Title = "Time";
-            chartArea5.AxisX.TitleForeColor = System.Drawing.Color.LimeGreen;
-            chartArea5.AxisX2.TitleForeColor = System.Drawing.Color.ForestGreen;
-            chartArea5.AxisY.LabelStyle.ForeColor = System.Drawing.Color.YellowGreen;
-            chartArea5.AxisY.LineColor = System.Drawing.Color.Green;
-            chartArea5.AxisY.MajorGrid.LineColor = System.Drawing.Color.Green;
-            chartArea5.AxisY.ScaleBreakStyle.LineColor = System.Drawing.Color.DarkGreen;
-            chartArea5.AxisY.Title = "Iterations";
-            chartArea5.AxisY.TitleForeColor = System.Drawing.Color.YellowGreen;
-            chartArea5.BackColor = System.Drawing.Color.Transparent;
-            chartArea5.BorderColor = System.Drawing.Color.ForestGreen;
-            chartArea5.Name = "ChartArea1";
-            this.chart1.ChartAreas.Add(chartArea5);
+            chartArea1.AxisX.LabelStyle.ForeColor = System.Drawing.Color.YellowGreen;
+            chartArea1.AxisX.LineColor = System.Drawing.Color.Green;
+            chartArea1.AxisX.MajorGrid.LineColor = System.Drawing.Color.Green;
+            chartArea1.AxisX.MajorGrid.LineDashStyle = System.Windows.Forms.DataVisualization.Charting.ChartDashStyle.Dot;
+            chartArea1.AxisX.MajorTickMark.LineColor = System.Drawing.Color.DarkGreen;
+            chartArea1.AxisX.MinorGrid.LineColor = System.Drawing.Color.Bisque;
+            chartArea1.AxisX.MinorTickMark.LineColor = System.Drawing.Color.DimGray;
+            chartArea1.AxisX.ScaleBreakStyle.LineColor = System.Drawing.Color.DarkOliveGreen;
+            chartArea1.AxisX.Title = "Time";
+            chartArea1.AxisX.TitleForeColor = System.Drawing.Color.LimeGreen;
+            chartArea1.AxisX2.TitleForeColor = System.Drawing.Color.ForestGreen;
+            chartArea1.AxisY.LabelStyle.ForeColor = System.Drawing.Color.YellowGreen;
+            chartArea1.AxisY.LineColor = System.Drawing.Color.Green;
+            chartArea1.AxisY.MajorGrid.LineColor = System.Drawing.Color.Green;
+            chartArea1.AxisY.ScaleBreakStyle.LineColor = System.Drawing.Color.DarkGreen;
+            chartArea1.AxisY.Title = "Iterations";
+            chartArea1.AxisY.TitleForeColor = System.Drawing.Color.YellowGreen;
+            chartArea1.BackColor = System.Drawing.Color.Transparent;
+            chartArea1.BorderColor = System.Drawing.Color.ForestGreen;
+            chartArea1.Name = "ChartArea1";
+            this.chart1.ChartAreas.Add(chartArea1);
             this.chart1.Dock = System.Windows.Forms.DockStyle.Fill;
-            legend5.BackColor = System.Drawing.Color.Transparent;
-            legend5.ForeColor = System.Drawing.Color.Green;
-            legend5.HeaderSeparatorColor = System.Drawing.Color.Green;
-            legend5.ItemColumnSeparatorColor = System.Drawing.Color.Green;
-            legend5.Name = "Legend1";
-            legend5.Title = "Threads";
-            legend5.TitleBackColor = System.Drawing.Color.Transparent;
-            legend5.TitleForeColor = System.Drawing.Color.Green;
-            legend5.TitleSeparator = System.Windows.Forms.DataVisualization.Charting.LegendSeparatorStyle.DoubleLine;
-            legend5.TitleSeparatorColor = System.Drawing.Color.Green;
-            this.chart1.Legends.Add(legend5);
+            legend1.BackColor = System.Drawing.Color.Transparent;
+            legend1.ForeColor = System.Drawing.Color.Green;
+            legend1.HeaderSeparatorColor = System.Drawing.Color.Green;
+            legend1.ItemColumnSeparatorColor = System.Drawing.Color.Green;
+            legend1.Name = "Legend1";
+            legend1.Title = "Threads";
+            legend1.TitleBackColor = System.Drawing.Color.Transparent;
+            legend1.TitleForeColor = System.Drawing.Color.Green;
+            legend1.TitleSeparator = System.Windows.Forms.DataVisualization.Charting.LegendSeparatorStyle.DoubleLine;
+            legend1.TitleSeparatorColor = System.Drawing.Color.Green;
+            this.chart1.Legends.Add(legend1);
             this.chart1.Location = new System.Drawing.Point(0, 0);
             this.chart1.Name = "chart1";
             this.chart1.Palette = System.Windows.Forms.DataVisualization.Charting.ChartColorPalette.None;
@@ -245,12 +250,6 @@
             this.btnFill.Text = "Add";
             this.btnFill.UseVisualStyleBackColor = true;
             this.btnFill.Click += new System.EventHandler(this.button1_Click);
-            // 
-            // timer
-            // 
-            this.timer.Enabled = true;
-            this.timer.Interval = 1000;
-            this.timer.Tick += new System.EventHandler(this.timer_Tick);
             // 
             // MainForm
             // 

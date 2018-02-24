@@ -24,9 +24,6 @@ namespace LoadTester
 
         public static void StartAll()
         {
-            int loops = 0;
-            double miliseconds = 0;
-
             foreach (var threadWrapper in m_threadWrappers)
             {
                 threadWrapper.Start();

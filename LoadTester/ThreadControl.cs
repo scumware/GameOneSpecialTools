@@ -60,6 +60,11 @@ namespace LoadTester
                     btnStartStop.Text = "Stop";
                     break;
 
+                case ThreadState.Suspended:
+                    pictureBox1.Image = Properties.Resources.sleeping;
+                    btnStartStop.Text = "Resume";
+                    break;
+
                 case ThreadState.Stopped:
                     pictureBox1.Image = Properties.Resources._32px_Sert___dead_smile_svg;
                     btnStartStop.Text = "Start";
@@ -154,6 +159,7 @@ namespace LoadTester
             switch (m_wrapper.State)
             {
                 case ThreadState.Stopped:
+                case ThreadState.Suspended:
                     m_wrapper.Start();
                     break;
 

@@ -2,6 +2,7 @@
 {
     public enum ThreadState
     {
+        Suspended,
         Stopped,
         Started
     };

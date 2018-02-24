@@ -7,6 +7,8 @@ namespace LoadTester
 {
     public enum LoadType
     {
+        YieldExecution,
+        Sleep,
         EmptyLoop,
         SpinWait,
         MemoryPressure

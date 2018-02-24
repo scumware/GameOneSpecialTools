@@ -34,10 +34,6 @@ namespace LoadTester
                 count = 1;
             }
             IList<ThreadWrapper> newWrappers = ThreadsManager.AddThreads(count);
-            for (int i = 0; i < newWrappers.Count; i++)
-            {
-                newWrappers[i] = new ThreadWrapper();
-            }
 
             flowLayoutPanel.Parent.SuspendLayout();
             flowLayoutPanel.SuspendLayout();
@@ -49,16 +45,14 @@ namespace LoadTester
                     ThreadControl threadControl = new ThreadControl();
                     threadControl.Wrapper = threadWrapper;
 
-                    //flowLayoutPanel.Controls.Add( threadControl, 0, m_threadWrappers.Count );
                     flowLayoutPanel.Controls.Add(threadControl);
+                    AddSeries(threadWrapper);
 
                     threadControl.Anchor = AnchorStyles.Left;
                     threadControl.AutoSizeMode = AutoSizeMode.GrowAndShrink;
                     threadControl.AutoSize = true;
 
                     threadControl.Visible = true;
-
-                    //flowLayoutPanel.RowStyles.Add( new RowStyle( SizeType.AutoSize ) );
                 }
 
             }
@@ -91,34 +85,53 @@ namespace LoadTester
 
         private void UpdateChart()
         {
-            this.chart1.Series.Clear();
-
+            this.chart1.Series.SuspendUpdates();
             foreach (var threadWrapper in ThreadsManager.ThreadWrappers)
             {
-                var series1 = new Series();
-                series1.BorderColor = Color.White;
-                series1.BorderDashStyle = ChartDashStyle.Solid;
-                series1.ChartArea = "ChartArea1";
-                series1.ChartType = SeriesChartType.StepLine;
-                series1.Color = Color.Lime;
-                series1.LabelBackColor = Color.Maroon;
-                series1.LabelForeColor = Color.Lime;
-                series1.Legend = "Legend1";
-                series1.Name = "Thread +" + threadWrapper.GetHashCode();
-                this.chart1.Series.Add(series1);
-
-                chart1.ChartAreas.SuspendUpdates();
-                int[] values = new int[]
-                    {1, 2, 3, 4, 5, 6, 7, 8, 9, 9, 9, 9, 3, 8, 8, 8, 7, 7, 7, 6, 6, 5, 5, 5, 4, 4, 3, 2, 1};
-                for (int i = 0; i < 1000; i++)
-                    for (int index = 0; index < values.Length; index++)
+                foreach (Series series in chart1.Series)
+                {
+                    if (series.Tag == threadWrapper)
                     {
-                        var value = values[index];
-                        var dataPoint = series1.Points.Add((double) value*10);
+                        var speeds = (double[])threadWrapper.Speeds.Clone();
+                        for (int pointIdex = 0; pointIdex < series.Points.Count; pointIdex++)
+                        {
+                            var point = series.Points[pointIdex];
+                            var speed = speeds[pointIdex];
+                            point.YValues[0] = speed;
+                        }
                     }
-                chart1.ChartAreas.ResumeUpdates();
-
+                }
             }
+            chart1.ChartAreas.ResumeUpdates();
+        }
+
+        private void AddSeries(ThreadWrapper p_threadWrapper)
+        {
+            this.chart1.Series.SuspendUpdates();
+
+            var newSeries = new Series
+            {
+                BorderColor = Color.White,
+                BorderDashStyle = ChartDashStyle.Solid,
+                ChartArea = chart1.ChartAreas[0].Name,
+                ChartType = SeriesChartType.StepLine,
+                Color = Color.Lime,
+                LabelBackColor = Color.Maroon,
+                LabelForeColor = Color.Lime,
+                Legend = "Legend1",
+                Name = "Thread +" + p_threadWrapper.ThreadId,
+                Tag = p_threadWrapper
+            };
+            this.chart1.Series.Add(newSeries);
+
+            chart1.ChartAreas.SuspendUpdates();
+            for (int index = 0; index < p_threadWrapper.Speeds.Length; index++)
+            {
+                var value = p_threadWrapper.Speeds[index];
+                var dataPoint = newSeries.Points.Add(value);
+            }
+
+            chart1.ChartAreas.ResumeUpdates();
         }
     }
 }

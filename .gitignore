@@ -51,3 +51,5 @@ Temporary Items
 .apdisk
 .vs/GameOneSpecialTools/v15/sqlite3/storage.ide
 *.suo
+*.suo
+*.ide

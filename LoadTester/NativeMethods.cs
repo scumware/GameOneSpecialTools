@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Runtime.CompilerServices;
 using System.Runtime.ConstrainedExecution;
 using System.Runtime.InteropServices;
 using System.Security;
@@ -65,8 +66,23 @@ namespace LoadTester
             uint dwStackSize,
             ThreadStart lpStartAddress,
             uint* lpParameter,
-            uint dwCreationFlags,
+            ThreadCreationFlags dwCreationFlags,
             out uint lpThreadId);
+
+        [DllImport("Kernel32.dll", CharSet = CharSet.Auto, SetLastError = true)]
+        public static extern unsafe uint ResumeThread(
+            [In] uint hThread
+        );
+
+        [Flags]
+        public enum ThreadCreationFlags : UInt32
+        {
+            CREATE_NORMAL = 0
+            ,
+            CREATE_SUSPENDED = 0x00000004
+            ,
+            STACK_SIZE_PARAM_IS_A_RESERVATION = 0x00010000
+        }
 
         [DllImport( "kernel32.dll", SetLastError = true )]
         public static extern bool SetThreadPriority( IntPtr hThread, ThreadPriority nPriority );
@@ -102,6 +118,29 @@ namespace LoadTester
             return timeCaps;
         }
 
+        [DllImport("kernel32.dll", SetLastError = true)]
+        public static extern unsafe IntPtr CreateWaitableTimer(
+          [In][Optional] uint* lpTimerAttributes,
+          [In] bool             bManualReset,
+          [In] string lpTimerName
+        );
+
+        [DllImport("kernel32.dll", SetLastError = true)]
+        public static extern unsafe bool SetWaitableTimer(
+          [In][Optional] IntPtr    hTimer,
+          [In]           ref long  pDueTime,
+          [In]           long lPeriod,
+          [In][Optional] PTIMERAPCROUTINE pfnCompletionRoutine,
+          [In][Optional] void* lpArgToCompletionRoutine,
+          [In]           bool fResume
+);
+
+        public unsafe delegate void PTIMERAPCROUTINE(
+          [In][Optional]  void* lpArgToCompletionRoutine,
+          [In] ulong  dwTimerLowValue,
+          [In] ulong dwTimerHighValue
+        );
+
         [StructLayout(LayoutKind.Sequential)]
         public struct TimeCaps
         {
@@ -126,6 +165,13 @@ namespace LoadTester
 
         [DllImport("kernel32.dll", SetLastError = true, ExactSpelling = true)]
         public static extern Int32 WaitForSingleObject(IntPtr Handle, uint Wait);
+
+        /// <summary>
+        /// Yield execution to another thread. Better then Sleep(0)
+        /// </summary>
+        /// <returns></returns>
+        [DllImport("kernel32.dll", SetLastError = true, ExactSpelling = true)]
+        public static extern bool SwitchToThread();
 
         [Flags]
         // ReSharper disable once BuiltInTypeReferenceStyle
