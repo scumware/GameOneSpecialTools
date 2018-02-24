@@ -21,6 +21,8 @@ namespace LoadTester
             ThreadsManager.Init();
         }
 
+        private Color[] chartColors = new Color[]{Color.Lime, Color.Red, Color.Yellow, Color.White, Color.BlueViolet, Color.GreenYellow, Color.OrangeRed, Color.Brown, Color.CadetBlue, Color.Aqua, Color.Azure, Color.Blue, Color.Coral, Color.DeepPink, Color.DarkSalmon, Color.Silver};
+
         private void button1_Click( object sender, EventArgs e )
         {
             //m_threadWrappers 
@@ -119,6 +121,14 @@ namespace LoadTester
         private void AddSeries(ThreadWrapper p_threadWrapper)
         {
             this.chart1.Series.SuspendUpdates();
+            var colorIndex = this.chart1.Series.Count;
+            if (colorIndex >= chartColors.Length)
+            {
+                colorIndex = 0;
+            }
+
+            var originalColor = chartColors[colorIndex];
+            Color seriesColor = Color.FromArgb(196, originalColor.R, originalColor.G, originalColor.B);
 
             var newSeries = new Series
             {
@@ -126,7 +136,7 @@ namespace LoadTester
                 BorderDashStyle = ChartDashStyle.Solid,
                 ChartArea = chart1.ChartAreas[0].Name,
                 ChartType = SeriesChartType.StepLine,
-                Color = Color.Lime,
+                Color = seriesColor,
                 LabelBackColor = Color.Maroon,
                 LabelForeColor = Color.Lime,
                 Legend = "Legend1",

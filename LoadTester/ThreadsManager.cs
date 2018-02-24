@@ -66,6 +66,7 @@ namespace LoadTester
             var thread = new Thread(
                 UpdateSpeeds);
             thread.Start();
+            thread.Priority = System.Threading.ThreadPriority.Highest;
         }
 
         private static Stopwatch m_stopwatch = new Stopwatch();
@@ -84,17 +85,32 @@ namespace LoadTester
 
                 m_intervals[intervalIndex] = milliseconds;
                 ++intervalIndex;
+                bool needShifting = false;
                 if (intervalIndex == m_intervals.Length)
-                    intervalIndex = 0;
+                {
+                    intervalIndex = m_intervals.Length-1;
+                    needShifting = true;
+                }
+                ShiftArrayValues(m_intervals);
 
                 foreach (var threadWrapper in ThreadWrappers)
                 {
                     double threadWrapperLooped = threadWrapper.Looped;
                     threadWrapper.Speeds[intervalIndex] = threadWrapperLooped/milliseconds;
+                    ShiftArrayValues(threadWrapper.Speeds);
                     threadWrapper.Looped = 0;
                 }
             }
             NativeMethods.CloseHandle(s_waitableTimer);
+        }
+
+        private static void ShiftArrayValues<T>(T[] p_array)
+        {
+            for (int i = 1; i < p_array.Length; i++)
+            {
+                var interval = p_array[i];
+                p_array[i - 1] = interval;
+            }
         }
 
         public static ThreadWrapper[] AddThreads(int p_count)
