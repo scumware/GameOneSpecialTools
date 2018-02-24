@@ -19,34 +19,6 @@ namespace LoadTester
 
             NativeMethods.DisableProcessWindowsGhosting();
             ThreadsManager.Init();
-/*
-            System.Windows.Forms.DataVisualization.Charting.Series series1 = new System.Windows.Forms.DataVisualization.Charting.Series();
-            //series1.BorderColor = System.Drawing.Color.White;
-            series1.BorderDashStyle = System.Windows.Forms.DataVisualization.Charting.ChartDashStyle.NotSet;
-            series1.ChartArea = "ChartArea1";
-            series1.ChartType = System.Windows.Forms.DataVisualization.Charting.SeriesChartType.Spline;
-            series1.Color = System.Drawing.Color.Lime;
-            series1.EmptyPointStyle.Color = System.Drawing.Color.Transparent;
-            series1.LabelBackColor = System.Drawing.Color.Maroon;
-            series1.LabelForeColor = System.Drawing.Color.Lime;
-            series1.Legend = "Legend1";
-            series1.Name = "Series1";
-            this.chart1.Series.Add(series1);
-            series1.MarkerColor = Color.Aqua;
-            var values = new int[] { 1, 2, 3, 4, 5, 6, 7, 8, 9, 9, 9, 9, 9, 8, 8, 8, 7, 7, 7, 6, 6, 5, 5, 5, 4, 4, 3, 2, 1 };
-                var points = series1.Points;
-            for (int index = 0; index < values.Length; index++)
-            {
-                var value = values[index];
-
-                var dataPoint = points.Add((double)value);
-                dataPoint.Color = Color.Aqua;
-                dataPoint.AxisLabel = "dsf";
-                dataPoint.LabelBackColor = Color.Aqua;
-                points[index].XValue = index;
-                points.Add(dataPoint);
-            }
- */
         }
 
         private void button1_Click( object sender, EventArgs e )
@@ -110,6 +82,43 @@ namespace LoadTester
         private void MainForm_FormClosing( object sender, FormClosingEventArgs e )
         {
             ThreadsManager.StopAll();
+        }
+
+        private void timer_Tick(object sender, EventArgs e)
+        {
+            UpdateChart();
+        }
+
+        private void UpdateChart()
+        {
+            this.chart1.Series.Clear();
+
+            foreach (var threadWrapper in ThreadsManager.ThreadWrappers)
+            {
+                var series1 = new Series();
+                series1.BorderColor = Color.White;
+                series1.BorderDashStyle = ChartDashStyle.Solid;
+                series1.ChartArea = "ChartArea1";
+                series1.ChartType = SeriesChartType.StepLine;
+                series1.Color = Color.Lime;
+                series1.LabelBackColor = Color.Maroon;
+                series1.LabelForeColor = Color.Lime;
+                series1.Legend = "Legend1";
+                series1.Name = "Thread +" + threadWrapper.GetHashCode();
+                this.chart1.Series.Add(series1);
+
+                chart1.ChartAreas.SuspendUpdates();
+                int[] values = new int[]
+                    {1, 2, 3, 4, 5, 6, 7, 8, 9, 9, 9, 9, 3, 8, 8, 8, 7, 7, 7, 6, 6, 5, 5, 5, 4, 4, 3, 2, 1};
+                for (int i = 0; i < 1000; i++)
+                    for (int index = 0; index < values.Length; index++)
+                    {
+                        var value = values[index];
+                        var dataPoint = series1.Points.Add((double) value*10);
+                    }
+                chart1.ChartAreas.ResumeUpdates();
+
+            }
         }
     }
 }

@@ -14,6 +14,8 @@ namespace LoadTester
 {
     public class ThreadWrapper : INotifyPropertyChanged
     {
+        public double[] Speeds;
+
         public delegate void LoopAction([MarshalAs(UnmanagedType.Bool)] ref bool p_flag);
 
         private static readonly LoopAction s_pause;
@@ -31,9 +33,16 @@ namespace LoadTester
             s_pause = GetPauseDelegate();
         }
 
+        public const int countLastMeasurement = 5000;
 
         public ThreadWrapper()
         {
+            Speeds = new double[5000];
+            for (int i = 0; i < countLastMeasurement; i++)
+            {
+                Speeds[i] = -1;
+            }
+
             AfinnityArray = new BitArray();
             Afinnity = UInt32.MaxValue;
             AfinnityArray.SetCount(Environment.ProcessorCount);

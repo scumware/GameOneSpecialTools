@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 
 namespace LoadTester
@@ -6,8 +7,26 @@ namespace LoadTester
     {
         private static IList<ThreadWrapper> m_threadWrappers;
 
+        private static double[] m_intervals = new double[5 * 1000];
+
+        private static readonly double[][] EmptyDoubles = new double[0][];
+
+
+        public static double[] Intervals
+        {
+            get { return m_intervals; }
+        }
+
+        public static IList<ThreadWrapper> ThreadWrappers
+        {
+            get { return m_threadWrappers; }
+        }
+
         public static void StartAll()
         {
+            int loops = 0;
+            double miliseconds = 0;
+
             foreach (var threadWrapper in m_threadWrappers)
             {
                 threadWrapper.Start();

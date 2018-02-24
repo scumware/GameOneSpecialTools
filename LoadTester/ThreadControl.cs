@@ -16,6 +16,7 @@ namespace LoadTester
 
         public ThreadControl()
         {
+
             InitializeComponent();
             BackColor = System.Drawing.Color.FromArgb(32,10,20,0);
 

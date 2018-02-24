@@ -91,6 +91,42 @@ namespace LoadTester
         [return: MarshalAs( UnmanagedType.Bool )]
         public static extern bool CloseHandle( IntPtr hObject );
 
+        [DllImport("winmm.dll", SetLastError = true)]
+        private static extern UInt32 timeGetDevCaps(ref TimeCaps timeCaps,
+                    UInt32 sizeTimeCaps);
+
+        public static unsafe TimeCaps GetTimerDeviceCaps()
+        {
+            NativeMethods.TimeCaps timeCaps = new NativeMethods.TimeCaps();
+            NativeMethods.timeGetDevCaps(ref timeCaps, (uint) sizeof(NativeMethods.TimeCaps));
+            return timeCaps;
+        }
+
+        [StructLayout(LayoutKind.Sequential)]
+        public struct TimeCaps
+        {
+            public UInt32 wPeriodMin;
+            public UInt32 wPeriodMax;
+        };
+
+        [DllImport("kernel32.dll")]
+        public static extern IntPtr CreateWaitableTimer(IntPtr lpTimerAttributes, bool bManualReset, string lpTimerName);
+
+        [DllImport("kernel32.dll")]
+        public static extern bool SetWaitableTimer(IntPtr hTimer, [In] ref long pDueTime,
+            int lPeriod, TimerCompleteDelegate pfnCompletionRoutine,
+            IntPtr lpArgToCompletionRoutine, bool fResume);
+
+
+        [DllImport("kernel32.dll")]
+        public static extern bool CancelWaitableTimer(IntPtr hTimer);
+
+        public delegate void TimerCompleteDelegate();
+
+
+        [DllImport("kernel32.dll", SetLastError = true, ExactSpelling = true)]
+        public static extern Int32 WaitForSingleObject(IntPtr Handle, uint Wait);
+
         [Flags]
         // ReSharper disable once BuiltInTypeReferenceStyle
         // ReSharper disable once EnumUnderlyingTypeIsInt

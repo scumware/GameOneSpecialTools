@@ -29,9 +29,9 @@
         /// </summary>
         private void InitializeComponent()
         {
-            System.Windows.Forms.DataVisualization.Charting.ChartArea chartArea1 = new System.Windows.Forms.DataVisualization.Charting.ChartArea();
-            System.Windows.Forms.DataVisualization.Charting.Legend legend1 = new System.Windows.Forms.DataVisualization.Charting.Legend();
-            System.Windows.Forms.DataVisualization.Charting.Series series1 = new System.Windows.Forms.DataVisualization.Charting.Series();
+            this.components = new System.ComponentModel.Container();
+            System.Windows.Forms.DataVisualization.Charting.ChartArea chartArea5 = new System.Windows.Forms.DataVisualization.Charting.ChartArea();
+            System.Windows.Forms.DataVisualization.Charting.Legend legend5 = new System.Windows.Forms.DataVisualization.Charting.Legend();
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(MainForm));
             this.tableMain = new LoadTester.DoubleBufferedTableLayoutPanel();
             this.splitContainer = new System.Windows.Forms.SplitContainer();
@@ -42,6 +42,7 @@
             this.btnStart = new System.Windows.Forms.Button();
             this.btnAdd = new System.Windows.Forms.Button();
             this.btnFill = new System.Windows.Forms.Button();
+            this.timer = new System.Windows.Forms.Timer(this.components);
             this.tableMain.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.splitContainer)).BeginInit();
             this.splitContainer.Panel1.SuspendLayout();
@@ -67,7 +68,7 @@
             this.tableMain.RowStyles.Add(new System.Windows.Forms.RowStyle());
             this.tableMain.RowStyles.Add(new System.Windows.Forms.RowStyle());
             this.tableMain.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 20F));
-            this.tableMain.Size = new System.Drawing.Size(1264, 561);
+            this.tableMain.Size = new System.Drawing.Size(1008, 561);
             this.tableMain.TabIndex = 4;
             // 
             // splitContainer
@@ -91,7 +92,7 @@
             // splitContainer.Panel2
             // 
             this.splitContainer.Panel2.Controls.Add(this.chart1);
-            this.splitContainer.Size = new System.Drawing.Size(1264, 493);
+            this.splitContainer.Size = new System.Drawing.Size(1008, 493);
             this.splitContainer.SplitterDistance = 335;
             this.splitContainer.SplitterWidth = 5;
             this.splitContainer.TabIndex = 5;
@@ -104,51 +105,50 @@
             this.flowLayoutPanel.Location = new System.Drawing.Point(0, 0);
             this.flowLayoutPanel.Margin = new System.Windows.Forms.Padding(0);
             this.flowLayoutPanel.Name = "flowLayoutPanel";
-            this.flowLayoutPanel.Size = new System.Drawing.Size(1262, 333);
+            this.flowLayoutPanel.Size = new System.Drawing.Size(1006, 333);
             this.flowLayoutPanel.TabIndex = 6;
             // 
             // chart1
             // 
-            this.chart1.BackColor = System.Drawing.Color.Transparent;
+            this.chart1.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(52)))), ((int)(((byte)(46)))), ((int)(((byte)(46)))), ((int)(((byte)(46)))));
             this.chart1.BorderlineColor = System.Drawing.Color.Red;
-            chartArea1.AxisX.LineColor = System.Drawing.Color.Green;
-            chartArea1.AxisX.MajorGrid.LineColor = System.Drawing.Color.Green;
-            chartArea1.AxisX.MajorGrid.LineDashStyle = System.Windows.Forms.DataVisualization.Charting.ChartDashStyle.Dot;
-            chartArea1.AxisX.TitleForeColor = System.Drawing.Color.LimeGreen;
-            chartArea1.AxisX2.TitleForeColor = System.Drawing.Color.ForestGreen;
-            chartArea1.AxisY.LineColor = System.Drawing.Color.Green;
-            chartArea1.AxisY.MajorGrid.LineColor = System.Drawing.Color.Green;
-            chartArea1.AxisY.TitleForeColor = System.Drawing.Color.YellowGreen;
-            chartArea1.BackColor = System.Drawing.Color.Transparent;
-            chartArea1.BorderColor = System.Drawing.Color.ForestGreen;
-            chartArea1.Name = "ChartArea1";
-            this.chart1.ChartAreas.Add(chartArea1);
+            chartArea5.AxisX.LabelStyle.ForeColor = System.Drawing.Color.YellowGreen;
+            chartArea5.AxisX.LineColor = System.Drawing.Color.Green;
+            chartArea5.AxisX.MajorGrid.LineColor = System.Drawing.Color.Green;
+            chartArea5.AxisX.MajorGrid.LineDashStyle = System.Windows.Forms.DataVisualization.Charting.ChartDashStyle.Dot;
+            chartArea5.AxisX.MajorTickMark.LineColor = System.Drawing.Color.DarkGreen;
+            chartArea5.AxisX.MinorGrid.LineColor = System.Drawing.Color.Bisque;
+            chartArea5.AxisX.MinorTickMark.LineColor = System.Drawing.Color.DimGray;
+            chartArea5.AxisX.ScaleBreakStyle.LineColor = System.Drawing.Color.DarkOliveGreen;
+            chartArea5.AxisX.Title = "Time";
+            chartArea5.AxisX.TitleForeColor = System.Drawing.Color.LimeGreen;
+            chartArea5.AxisX2.TitleForeColor = System.Drawing.Color.ForestGreen;
+            chartArea5.AxisY.LabelStyle.ForeColor = System.Drawing.Color.YellowGreen;
+            chartArea5.AxisY.LineColor = System.Drawing.Color.Green;
+            chartArea5.AxisY.MajorGrid.LineColor = System.Drawing.Color.Green;
+            chartArea5.AxisY.ScaleBreakStyle.LineColor = System.Drawing.Color.DarkGreen;
+            chartArea5.AxisY.Title = "Iterations";
+            chartArea5.AxisY.TitleForeColor = System.Drawing.Color.YellowGreen;
+            chartArea5.BackColor = System.Drawing.Color.Transparent;
+            chartArea5.BorderColor = System.Drawing.Color.ForestGreen;
+            chartArea5.Name = "ChartArea1";
+            this.chart1.ChartAreas.Add(chartArea5);
             this.chart1.Dock = System.Windows.Forms.DockStyle.Fill;
-            legend1.BackColor = System.Drawing.Color.Transparent;
-            legend1.ForeColor = System.Drawing.Color.Green;
-            legend1.HeaderSeparatorColor = System.Drawing.Color.Green;
-            legend1.ItemColumnSeparatorColor = System.Drawing.Color.Green;
-            legend1.Name = "Legend1";
-            legend1.Title = "Threads";
-            legend1.TitleBackColor = System.Drawing.Color.Transparent;
-            legend1.TitleForeColor = System.Drawing.Color.Green;
-            legend1.TitleSeparator = System.Windows.Forms.DataVisualization.Charting.LegendSeparatorStyle.DoubleLine;
-            legend1.TitleSeparatorColor = System.Drawing.Color.Green;
-            this.chart1.Legends.Add(legend1);
+            legend5.BackColor = System.Drawing.Color.Transparent;
+            legend5.ForeColor = System.Drawing.Color.Green;
+            legend5.HeaderSeparatorColor = System.Drawing.Color.Green;
+            legend5.ItemColumnSeparatorColor = System.Drawing.Color.Green;
+            legend5.Name = "Legend1";
+            legend5.Title = "Threads";
+            legend5.TitleBackColor = System.Drawing.Color.Transparent;
+            legend5.TitleForeColor = System.Drawing.Color.Green;
+            legend5.TitleSeparator = System.Windows.Forms.DataVisualization.Charting.LegendSeparatorStyle.DoubleLine;
+            legend5.TitleSeparatorColor = System.Drawing.Color.Green;
+            this.chart1.Legends.Add(legend5);
             this.chart1.Location = new System.Drawing.Point(0, 0);
             this.chart1.Name = "chart1";
-            series1.BorderColor = System.Drawing.Color.White;
-            series1.BorderDashStyle = System.Windows.Forms.DataVisualization.Charting.ChartDashStyle.NotSet;
-            series1.ChartArea = "ChartArea1";
-            series1.ChartType = System.Windows.Forms.DataVisualization.Charting.SeriesChartType.Spline;
-            series1.Color = System.Drawing.Color.Lime;
-            series1.EmptyPointStyle.Color = System.Drawing.Color.Transparent;
-            series1.LabelBackColor = System.Drawing.Color.Maroon;
-            series1.LabelForeColor = System.Drawing.Color.Lime;
-            series1.Legend = "Legend1";
-            series1.Name = "Series1";
-            this.chart1.Series.Add(series1);
-            this.chart1.Size = new System.Drawing.Size(1262, 151);
+            this.chart1.Palette = System.Windows.Forms.DataVisualization.Charting.ChartColorPalette.None;
+            this.chart1.Size = new System.Drawing.Size(1006, 151);
             this.chart1.TabIndex = 5;
             this.chart1.Text = "chart1";
             // 
@@ -175,7 +175,7 @@
             this.tableBottom.RowCount = 2;
             this.tableBottom.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 50F));
             this.tableBottom.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 50F));
-            this.tableBottom.Size = new System.Drawing.Size(1264, 68);
+            this.tableBottom.Size = new System.Drawing.Size(1008, 68);
             this.tableBottom.TabIndex = 5;
             // 
             // btnStop
@@ -185,7 +185,7 @@
             this.btnStop.FlatStyle = System.Windows.Forms.FlatStyle.Popup;
             this.btnStop.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
             this.btnStop.ForeColor = System.Drawing.Color.Yellow;
-            this.btnStop.Location = new System.Drawing.Point(1121, 42);
+            this.btnStop.Location = new System.Drawing.Point(865, 42);
             this.btnStop.Margin = new System.Windows.Forms.Padding(8, 8, 3, 3);
             this.btnStop.MinimumSize = new System.Drawing.Size(140, 0);
             this.btnStop.Name = "btnStop";
@@ -202,7 +202,7 @@
             this.btnStart.FlatStyle = System.Windows.Forms.FlatStyle.Popup;
             this.btnStart.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
             this.btnStart.ForeColor = System.Drawing.Color.Yellow;
-            this.btnStart.Location = new System.Drawing.Point(1121, 8);
+            this.btnStart.Location = new System.Drawing.Point(865, 8);
             this.btnStart.Margin = new System.Windows.Forms.Padding(8, 8, 3, 3);
             this.btnStart.MinimumSize = new System.Drawing.Size(140, 0);
             this.btnStart.Name = "btnStart";
@@ -219,7 +219,7 @@
             this.btnAdd.FlatStyle = System.Windows.Forms.FlatStyle.Popup;
             this.btnAdd.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
             this.btnAdd.ForeColor = System.Drawing.Color.Yellow;
-            this.btnAdd.Location = new System.Drawing.Point(969, 42);
+            this.btnAdd.Location = new System.Drawing.Point(713, 42);
             this.btnAdd.Margin = new System.Windows.Forms.Padding(8, 8, 3, 3);
             this.btnAdd.MinimumSize = new System.Drawing.Size(140, 0);
             this.btnAdd.Name = "btnAdd";
@@ -236,7 +236,7 @@
             this.btnFill.FlatStyle = System.Windows.Forms.FlatStyle.Popup;
             this.btnFill.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
             this.btnFill.ForeColor = System.Drawing.Color.Yellow;
-            this.btnFill.Location = new System.Drawing.Point(969, 8);
+            this.btnFill.Location = new System.Drawing.Point(713, 8);
             this.btnFill.Margin = new System.Windows.Forms.Padding(8, 8, 3, 3);
             this.btnFill.MinimumSize = new System.Drawing.Size(140, 0);
             this.btnFill.Name = "btnFill";
@@ -246,13 +246,20 @@
             this.btnFill.UseVisualStyleBackColor = true;
             this.btnFill.Click += new System.EventHandler(this.button1_Click);
             // 
+            // timer
+            // 
+            this.timer.Enabled = true;
+            this.timer.Interval = 1000;
+            this.timer.Tick += new System.EventHandler(this.timer_Tick);
+            // 
             // MainForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.Color.Black;
             this.BackgroundImage = global::LoadTester.Properties.Resources.DarkGrayWallpepper;
-            this.ClientSize = new System.Drawing.Size(1264, 561);
+            this.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Zoom;
+            this.ClientSize = new System.Drawing.Size(1008, 561);
             this.Controls.Add(this.tableMain);
             this.DoubleBuffered = true;
             this.ForeColor = System.Drawing.Color.Lime;
@@ -285,6 +292,7 @@
         private System.Windows.Forms.FlowLayoutPanel flowLayoutPanel;
         private System.Windows.Forms.DataVisualization.Charting.Chart chart1;
         private System.Windows.Forms.SplitContainer splitContainer;
+        private System.Windows.Forms.Timer timer;
     }
 }
 
