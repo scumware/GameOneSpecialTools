@@ -75,6 +75,7 @@ namespace LoadTester
 
         private void MainForm_FormClosing( object sender, FormClosingEventArgs e )
         {
+            ThreadsManager.FinishWork();
             ThreadsManager.StopAll();
         }
 
@@ -93,16 +94,26 @@ namespace LoadTester
                     if (series.Tag == threadWrapper)
                     {
                         var speeds = (double[])threadWrapper.Speeds.Clone();
+                        var intervals = (double[])ThreadsManager.Intervals.Clone();
+
+                        double previousTime = 0;
                         for (int pointIdex = 0; pointIdex < series.Points.Count; pointIdex++)
                         {
                             var point = series.Points[pointIdex];
                             var speed = speeds[pointIdex];
                             point.YValues[0] = speed;
+
+                            var interval = intervals[pointIdex];
+                            var newTime = previousTime + interval;
+                            point.XValue = newTime;
+
+                            previousTime = newTime;
                         }
                     }
                 }
             }
             chart1.ChartAreas.ResumeUpdates();
+            chart1.ChartAreas[0].RecalculateAxesScale();
         }
 
         private void AddSeries(ThreadWrapper p_threadWrapper)

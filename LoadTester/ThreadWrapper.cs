@@ -120,6 +120,11 @@ namespace LoadTester
         public long Looped
         {
             get { return m_looped; }
+            set
+            {
+                Thread.MemoryBarrier();
+                m_looped = value;
+            }
         }
 
         public uint ThreadId
@@ -236,7 +241,7 @@ namespace LoadTester
                 case ThreadState.Suspended:
                     m_looper = m_restartLoop = false;
 
-                    NativeMethods.ResumeThread(m_threadId);
+                    NativeMethods.ResumeThread((uint) m_threadHandle);
                     while (p_wait  &&  (false == m_looper)) 
                         Thread.SpinWait(10);
                     break;
@@ -270,7 +275,7 @@ namespace LoadTester
                         while (m_looper)
                         {
                             NativeMethods.SwitchToThread();
-                            ++m_looped;
+                            Interlocked.Increment(ref m_looped);
                         }
                         break;
 
@@ -278,17 +283,18 @@ namespace LoadTester
                         while (m_looper)
                         {
                             Thread.Sleep(1);
-                            ++m_looped;
+                            Interlocked.Increment(ref m_looped);
                         }
                         break;
 
                     case LoadType.EmptyLoop:
                         while (m_looper)
-                            ++m_looped;
+                            Interlocked.Increment(ref m_looped);
                         break;
 
                     case LoadType.SpinWait:
                         // while (m_looper.Value) PAUSE
+                        //not implemented Interlocked.Increment(ref m_looped);
                         s_pause(ref m_looper);
                         break;
 
@@ -296,7 +302,7 @@ namespace LoadTester
                         while (m_looper)
                         {
                             MemoryPressureFunction();
-                            ++m_looped;
+                            Interlocked.Increment(ref m_looped);
                         }
                         break;
 

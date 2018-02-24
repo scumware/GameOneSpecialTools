@@ -54,6 +54,7 @@
             // 
             // timer
             // 
+            this.timer.Enabled = true;
             this.timer.Interval = 1000;
             this.timer.Tick += new System.EventHandler(this.timer_Tick);
             // 
@@ -128,6 +129,7 @@
             chartArea1.AxisX.Title = "Time";
             chartArea1.AxisX.TitleForeColor = System.Drawing.Color.LimeGreen;
             chartArea1.AxisX2.TitleForeColor = System.Drawing.Color.ForestGreen;
+            chartArea1.AxisY.IsStartedFromZero = false;
             chartArea1.AxisY.LabelStyle.ForeColor = System.Drawing.Color.YellowGreen;
             chartArea1.AxisY.LineColor = System.Drawing.Color.Green;
             chartArea1.AxisY.MajorGrid.LineColor = System.Drawing.Color.Green;

@@ -126,10 +126,10 @@ namespace LoadTester
         );
 
         [DllImport("kernel32.dll", SetLastError = true)]
-        public static extern unsafe bool SetWaitableTimer(
+        private static extern unsafe bool SetWaitableTimer(
           [In][Optional] IntPtr    hTimer,
-          [In]           ref long  pDueTime,
-          [In]           long lPeriod,
+          [In]           ref Int64  pDueTime,
+          [In]           UInt32 lPeriod,
           [In][Optional] PTIMERAPCROUTINE pfnCompletionRoutine,
           [In][Optional] void* lpArgToCompletionRoutine,
           [In]           bool fResume
@@ -165,6 +165,8 @@ namespace LoadTester
 
         [DllImport("kernel32.dll", SetLastError = true, ExactSpelling = true)]
         public static extern Int32 WaitForSingleObject(IntPtr Handle, uint Wait);
+
+        public const uint INFINITE = 0xFFFFFFFF;
 
         /// <summary>
         /// Yield execution to another thread. Better then Sleep(0)
