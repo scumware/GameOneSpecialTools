@@ -167,5 +167,10 @@ namespace LoadTester
 
             chart1.ChartAreas.ResumeUpdates();
         }
+
+        private void chart1_DoubleClick(object sender, EventArgs e)
+        {
+            timer.Enabled = !timer.Enabled;
+        }
     }
 }

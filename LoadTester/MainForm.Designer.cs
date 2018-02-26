@@ -158,6 +158,7 @@
             this.chart1.Size = new System.Drawing.Size(1006, 151);
             this.chart1.TabIndex = 5;
             this.chart1.Text = "chart1";
+            this.chart1.DoubleClick += new System.EventHandler(this.chart1_DoubleClick);
             // 
             // tableBottom
             // 
