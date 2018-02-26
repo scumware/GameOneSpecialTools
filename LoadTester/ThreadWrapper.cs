@@ -16,12 +16,12 @@ namespace LoadTester
     {
         public double[] Speeds;
 
-        public delegate void LoopAction(/*[MarshalAs(UnmanagedType.Bool)]*/[In] ref bool p_flag);
+        public unsafe delegate void LoopAction(long p1, byte* p_flag);
 
         private static readonly LoopAction s_pause;
         private volatile LoadType m_loadType;
         private long m_looped;
-        private bool m_looper;
+        private volatile bool m_looper;
         private ThreadPriority m_priority;
         private volatile bool m_restartLoop;
         private volatile ThreadState m_state;
@@ -36,7 +36,7 @@ namespace LoadTester
 
         private bool m_disposed;
 
-        static ThreadWrapper()
+        static unsafe ThreadWrapper()
         {
             s_pause = GetPauseDelegate();
         }
@@ -138,13 +138,14 @@ namespace LoadTester
 
         public event PropertyChangedEventHandler PropertyChanged;
 
-        public static LoopAction GetPauseDelegate()
+        public static unsafe LoopAction GetPauseDelegate()
         {
             // @formatter:off
             byte[] codeBytes2 = new byte[]
             {
 
                 0x90                //nop
+                //0xcc                //int 3
                 , 0xF3, 0x90        //f390   pause
                 , 0x80, 0x3a, 0x00  //803a00 cmp     byte ptr [rdx],0
                 , 0x75, 0xF9,       //75F9   jne ->pause command
@@ -296,7 +297,14 @@ namespace LoadTester
                     case LoadType.SpinWait:
                         // while (m_looper.Value) PAUSE
                         //not implemented Interlocked.Increment(ref m_looped);
-                        s_pause(ref m_looper);
+                        unsafe
+                        {
+                            fixed (void* v = &m_looper)
+                            {
+                                s_pause(0, (byte*)v);
+                            }
+                        }
+
                         break;
 
                     case LoadType.MemoryPressure:
