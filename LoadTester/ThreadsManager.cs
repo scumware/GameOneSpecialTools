@@ -8,19 +8,22 @@ namespace LoadTester
 {
     public static class ThreadsManager
     {
-        private const int Period = 4;
+        public const int LastMeasurementsCount = (int) (10 * 1000);
+        private const int Period = 1;
         private static IList<ThreadWrapper> m_threadWrappers;
 
-        private static double[] m_intervals = new double[5 * 1000];
+        private static long s_totalElapsed = 0;
+        private static long[] s_times;
 
         private static readonly double[][] EmptyDoubles = new double[0][];
         private static IntPtr s_waitableTimer;
-        private static volatile bool m_disposed;
+        private static volatile int m_threadCollectionBusy;
+        private static volatile bool s_disposed;
 
 
-        public static double[] Intervals
+        public static long[] Times
         {
-            get { return m_intervals; }
+            get { return s_times; }
         }
 
         public static IList<ThreadWrapper> ThreadWrappers
@@ -46,22 +49,23 @@ namespace LoadTester
 
         public static void FinishWork()
         {
-            m_disposed = true;
+            s_disposed = true;
         }
 
         public static void Init()
         {
+            s_times = new long[LastMeasurementsCount];
             m_threadWrappers = new List<ThreadWrapper>();
 
             s_waitableTimer = NativeMethods.CreateWaitableTimer(default(IntPtr), false, "ThreadManager");
 
             m_stopwatch.Restart();
             var lPeriod = Period;
-            long pDueTime = lPeriod;
+            long pDueTime = lPeriod*10000;
             NativeMethods.SetWaitableTimer(s_waitableTimer, ref pDueTime, lPeriod, null, IntPtr.Zero, false);
 
-            for (int index = 0; index < m_intervals.Length; index++)
-                m_intervals[index] = Period;
+            for (int index = 0; index < s_times.Length; index++)
+                s_times[index] = -1;
 
             var thread = new Thread(
                 UpdateSpeeds);
@@ -74,32 +78,71 @@ namespace LoadTester
         {
             var intervalIndex = 0;
             long milliseconds;
-            while (false == m_disposed)
+            while (false == s_disposed)
             {
                 m_stopwatch.Restart();
                 NativeMethods.WaitForSingleObject(s_waitableTimer, NativeMethods.INFINITE);
 
                 milliseconds = m_stopwatch.ElapsedMilliseconds;
+                s_totalElapsed += milliseconds;
                 if (milliseconds < Period)
                     continue;
 
-                m_intervals[intervalIndex] = milliseconds;
+                s_times[intervalIndex] = s_totalElapsed;
+                if (intervalIndex > 0)
+                {
+                    var previousTotalElapsed = s_times[intervalIndex - 1];
+                    milliseconds = s_totalElapsed - previousTotalElapsed;
+                }
                 ++intervalIndex;
                 bool needShifting = false;
-                if (intervalIndex == m_intervals.Length)
+                if (intervalIndex == s_times.Length)
                 {
-                    intervalIndex = m_intervals.Length-1;
+                    intervalIndex = s_times.Length-1;
                     needShifting = true;
+                    ShiftArrayValues(s_times);
                 }
-                ShiftArrayValues(m_intervals);
 
-                foreach (var threadWrapper in ThreadWrappers)
+#pragma warning disable 420
+                //                       M
+                //                      dM
+                //                      MMr
+                //                     4MMML                  .
+                //                     MMMMM.                xf
+                //     .              "MMMMM               .MM-
+                //      Mh..          +MMMMMM            .MMMM
+                //      .MMM.         .MMMMML.          MMMMMh
+                //       )MMMh.        MMMMMM         MMMMMMM
+                //        3MMMMx.     'MMMMMMf      xnMMMMMM"
+                //        '*MMMMM      MMMMMM.     nMMMMMMP"
+                //          *MMMMMx    "MMMMM\    .MMMMMMM=
+                //           *MMMMMh   "MMMMM"   JMMMMMMP
+                //             MMMMMM   3MMMM.  dMMMMMM            .
+                //              MMMMMM  "MMMM  .MMMMM(        .nnMP"
+                //  =..          *MMMMx  MMM"  dMMMM"    .nnMMMMM*
+                //    "MMn...     'MMMMr 'MM   MMM"   .nMMMMMMM*"
+                //     "4MMMMnn..   *MMM  MM  MMP"  .dMMMMMMM""
+                //       ^MMMMMMMMx.  *ML "M .M*  .MMMMMM**"
+                //          *PMMMMMMhn. *x > M  .MMMM**""
+                //             ""**MMMMhx/.h/ .=*"
+                //                      .3P"%....
+                //                    nP"     "*MMnx
+                while (0 != Interlocked.CompareExchange(ref m_threadCollectionBusy, 1, 0))
+                    Thread.SpinWait(100);
+#pragma warning restore 420
+
+                for (int i = 0; i < ThreadWrappers.Count; i++)
                 {
+                    var threadWrapper = ThreadWrappers[i];
                     double threadWrapperLooped = threadWrapper.Looped;
                     threadWrapper.Speeds[intervalIndex] = threadWrapperLooped/milliseconds;
-                    ShiftArrayValues(threadWrapper.Speeds);
+                    if (needShifting)
+                        ShiftArrayValues(threadWrapper.Speeds);
+
                     threadWrapper.Looped = 0;
                 }
+                m_threadCollectionBusy = 0;
+
             }
             NativeMethods.CloseHandle(s_waitableTimer);
         }
@@ -121,7 +164,35 @@ namespace LoadTester
                  
                 var newThreadWrapper = new ThreadWrapper();
                 result[i] = newThreadWrapper;
+#pragma warning disable 420
+                //                       M
+                //                      dM
+                //                      MMr
+                //                     4MMML                  .
+                //                     MMMMM.                xf
+                //     .              "MMMMM               .MM-
+                //      Mh..          +MMMMMM            .MMMM
+                //      .MMM.         .MMMMML.          MMMMMh
+                //       )MMMh.        MMMMMM         MMMMMMM
+                //        3MMMMx.     'MMMMMMf      xnMMMMMM"
+                //        '*MMMMM      MMMMMM.     nMMMMMMP"
+                //          *MMMMMx    "MMMMM\    .MMMMMMM=
+                //           *MMMMMh   "MMMMM"   JMMMMMMP
+                //             MMMMMM   3MMMM.  dMMMMMM            .
+                //              MMMMMM  "MMMM  .MMMMM(        .nnMP"
+                //  =..          *MMMMx  MMM"  dMMMM"    .nnMMMMM*
+                //    "MMn...     'MMMMr 'MM   MMM"   .nMMMMMMM*"
+                //     "4MMMMnn..   *MMM  MM  MMP"  .dMMMMMMM""
+                //       ^MMMMMMMMx.  *ML "M .M*  .MMMMMM**"
+                //          *PMMMMMMhn. *x > M  .MMMM**""
+                //             ""**MMMMhx/.h/ .=*"
+                //                      .3P"%....
+                //                    nP"     "*MMnx
+                while (0 != Interlocked.CompareExchange(ref m_threadCollectionBusy, 1, 0))
+                    Thread.SpinWait(100);
+#pragma warning restore 420
                 m_threadWrappers.Add(newThreadWrapper);
+                m_threadCollectionBusy = 0;
             }
             return result;
         }

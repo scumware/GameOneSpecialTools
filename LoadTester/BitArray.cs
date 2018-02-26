@@ -5,7 +5,7 @@ using System.Collections.Generic;
 namespace LoadTester
 {
     
-    public class BitArray :IList<bool>
+    public class BitArray :IList<bool>, ICloneable
     {
         public void SetCount( int p_count )
         {
@@ -131,5 +131,13 @@ namespace LoadTester
         }
 
         #endregion
+
+        public object Clone()
+        {
+            var clone = new BitArray();
+            clone.m_value = m_value;
+            clone.m_count = m_count;
+            return clone;
+        }
     }
 }

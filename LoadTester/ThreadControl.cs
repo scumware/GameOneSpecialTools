@@ -112,46 +112,77 @@ namespace LoadTester
             {
                 labeledComboLoad.Combo.SelectedItem = m_wrapper.LoadType;
             }
-
+            if (p_propertyChangedEventArgs.PropertyName == "Afinnity")
+            {
+                UpdateAfinnity();
+            }
         }
 
         private void RefreshAll()
         {
             UpdateStateView(m_wrapper.State);
 
-            if (m_wrapper.AfinnityArray.Count != flowPanelAfinnity.Controls.OfType<CheckBox>().Count())
-            {
-                flowPanelAfinnity.Controls.Clear();
-            }
-            this.SuspendLayout();
-            flowPanelAfinnity.SuspendLayout();
-            for (int index = m_wrapper.AfinnityArray.Count - 1; index >= 0; index--)
-            {
-                var flag = m_wrapper.AfinnityArray[index];
-                var checkBox = new CheckBox();
-                checkBox.AutoSize = true;
-                checkBox.Checked = flag;
-                checkBox.BackColor = Color.Transparent;
-                checkBox.ForeColor = Color.YellowGreen;
-                checkBox.Text = "CPU " + index;
-                checkBox.Tag = index;
-                checkBox.CheckStateChanged += CheckBoxOnCheckStateChanged;
-                flowPanelAfinnity.Controls.Add( checkBox );
-                checkBox.Visible = true;
-            }
-            flowPanelAfinnity.ResumeLayout(false);
-            this.ResumeLayout();
+            UpdateAfinnity();
 
             labeledComboLoad.Combo.SelectedItem = m_wrapper.LoadType;
             labeledComboPriority.Combo.SelectedItem = m_wrapper.Priority;
         }
 
+        private bool m_refreshAfinnityInprogress = false;
+        private void UpdateAfinnity()
+        {
+            if (m_refreshAfinnityInprogress)
+                return;
+
+            m_refreshAfinnityInprogress = true;
+
+            var cleared = false;
+            this.SuspendLayout();
+            var checkBoxes = flowPanelAfinnity.Controls.OfType<CheckBox>().ToArray();
+
+            var count = m_wrapper.AfinnityArray.Count;
+            if (count != checkBoxes.Length)
+            {
+                flowPanelAfinnity.Controls.Clear();
+                cleared = true;
+            }
+            flowPanelAfinnity.SuspendLayout();
+            for (int index = count - 1; index >= 0; index--)
+            {
+                var checkBox = cleared ? new CheckBox() : checkBoxes[index];
+
+                var flag = m_wrapper.AfinnityArray[index];
+                checkBox.Checked = flag;
+
+                if (cleared)
+                {
+                    checkBox.AutoSize = true;
+                    checkBox.BackColor = Color.Transparent;
+                    checkBox.ForeColor = Color.YellowGreen;
+                    checkBox.Text = "CPU " + (count - index);
+                    checkBox.Tag = index;
+                    checkBox.CheckStateChanged += CheckBoxOnCheckStateChanged;
+                    flowPanelAfinnity.Controls.Add(checkBox);
+                    checkBox.Visible = true;
+                }
+            }
+            flowPanelAfinnity.ResumeLayout(false);
+            this.ResumeLayout();
+
+            m_refreshAfinnityInprogress = false;
+        }
+
         private void CheckBoxOnCheckStateChanged(object p_sender, EventArgs p_eventArgs)
         {
+            if (m_refreshAfinnityInprogress)
+                return;
+
+            m_refreshAfinnityInprogress = true;
             var checkBox = p_sender as CheckBox;
             var index = (int) checkBox.Tag;
 
             m_wrapper.AfinnityArray[index] = checkBox.Checked;
+            m_refreshAfinnityInprogress = false;
         }
 
         private void btnStartStop_Click( object sender, EventArgs e )
@@ -179,6 +210,17 @@ namespace LoadTester
         {
             if (null == m_wrapper) return;
             m_wrapper.LoadType = (LoadType)labeledComboLoad.Combo.SelectedItem;
+        }
+
+        private void pictureBox1_DoubleClick(object sender, EventArgs e)
+        {
+            var clone = (BitArray)m_wrapper.AfinnityArray.Clone();
+            for (int i = 0; i < clone.Count; i++)
+                clone[i] = false;
+
+            var number = clone.Count-1;
+            clone[number] = true;
+            m_wrapper.Afinnity = clone.Value;
         }
     }
 }

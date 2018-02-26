@@ -23,6 +23,7 @@ namespace LoadTester
 
         private Color[] chartColors = new Color[]{Color.Lime, Color.Red, Color.Yellow, Color.White, Color.BlueViolet, Color.GreenYellow, Color.OrangeRed, Color.Brown, Color.CadetBlue, Color.Aqua, Color.Azure, Color.Blue, Color.Coral, Color.DeepPink, Color.DarkSalmon, Color.Silver};
 
+
         private void button1_Click( object sender, EventArgs e )
         {
             //m_threadWrappers 
@@ -96,20 +97,24 @@ namespace LoadTester
                     if (series.Tag == threadWrapper)
                     {
                         var speeds = (double[])threadWrapper.Speeds.Clone();
-                        var intervals = (double[])ThreadsManager.Intervals.Clone();
+                        var times = (long[])ThreadsManager.Times.Clone();
+                        double previousTime = 0.0;
 
-                        double previousTime = 0;
                         for (int pointIdex = 0; pointIdex < series.Points.Count; pointIdex++)
                         {
                             var point = series.Points[pointIdex];
                             var speed = speeds[pointIdex];
                             point.YValues[0] = speed;
 
-                            var interval = intervals[pointIdex];
-                            var newTime = previousTime + interval;
-                            point.XValue = newTime;
+                            var time = (double)times[pointIdex];
+                            if (previousTime > time)
+                            {
+                                time = previousTime;
+                            }
 
-                            previousTime = newTime;
+
+                            point.XValue = time;
+                            previousTime = time;
                         }
                     }
                 }
@@ -135,7 +140,7 @@ namespace LoadTester
                 BorderColor = Color.White,
                 BorderDashStyle = ChartDashStyle.Solid,
                 ChartArea = chart1.ChartAreas[0].Name,
-                ChartType = SeriesChartType.StepLine,
+                ChartType = SeriesChartType.FastLine,
                 Color = seriesColor,
                 LabelBackColor = Color.Maroon,
                 LabelForeColor = Color.Lime,
@@ -146,10 +151,18 @@ namespace LoadTester
             this.chart1.Series.Add(newSeries);
 
             chart1.ChartAreas.SuspendUpdates();
+
+            var times = (long[])ThreadsManager.Times.Clone();
+            double previousTime = 0.0;
             for (int index = 0; index < p_threadWrapper.Speeds.Length; index++)
             {
                 var value = p_threadWrapper.Speeds[index];
-                var dataPoint = newSeries.Points.Add(value);
+                var time = (double)times[index];
+                if (previousTime > time)
+                    time = previousTime;
+
+                var dataPoint = newSeries.Points.AddXY(time, value);
+                previousTime = time;
             }
 
             chart1.ChartAreas.ResumeUpdates();

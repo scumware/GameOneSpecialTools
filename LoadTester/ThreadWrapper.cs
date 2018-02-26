@@ -16,7 +16,7 @@ namespace LoadTester
     {
         public double[] Speeds;
 
-        public delegate void LoopAction([MarshalAs(UnmanagedType.Bool)] ref bool p_flag);
+        public delegate void LoopAction(/*[MarshalAs(UnmanagedType.Bool)]*/[In] ref bool p_flag);
 
         private static readonly LoopAction s_pause;
         private volatile LoadType m_loadType;
@@ -41,14 +41,12 @@ namespace LoadTester
             s_pause = GetPauseDelegate();
         }
 
-        public const int countLastMeasurement = 5000;
-
         public ThreadWrapper()
         {
-            Speeds = new double[5000];
-            for (int i = 0; i < countLastMeasurement; i++)
+            Speeds = new double[ThreadsManager.LastMeasurementsCount];
+            for (int i = 0; i < ThreadsManager.LastMeasurementsCount; i++)
             {
-                Speeds[i] = -1;
+                Speeds[i] = 0;
             }
 
             AfinnityArray = new BitArray();
@@ -247,7 +245,10 @@ namespace LoadTester
                     break;
 
                 case ThreadState.Started:
+                    m_restartLoop = false;
+                    Thread.MemoryBarrier();
                     m_looper = false;
+                    Thread.MemoryBarrier();
                     while (p_wait && (false == m_stopped))
                         Thread.SpinWait(10);
                     break;
@@ -282,7 +283,7 @@ namespace LoadTester
                     case LoadType.Sleep:
                         while (m_looper)
                         {
-                            Thread.Sleep(1);
+                            Thread.Sleep(0);
                             Interlocked.Increment(ref m_looped);
                         }
                         break;
