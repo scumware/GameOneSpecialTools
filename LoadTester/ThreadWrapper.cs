@@ -15,6 +15,7 @@ namespace LoadTester
     public class ThreadWrapper : INotifyPropertyChanged, IDisposable
     {
         public double[] Speeds;
+        public long LoopedPreviously;
 
         public unsafe delegate void LoopAction(long p1, byte* p_flag);
 
@@ -118,11 +119,6 @@ namespace LoadTester
         public long Looped
         {
             get { return m_looped; }
-            set
-            {
-                Thread.MemoryBarrier();
-                m_looped = value;
-            }
         }
 
         public uint ThreadId
@@ -277,7 +273,8 @@ namespace LoadTester
                         while (m_looper)
                         {
                             NativeMethods.SwitchToThread();
-                            Interlocked.Increment(ref m_looped);
+                            ++m_looped;
+                            Thread.MemoryBarrier();
                         }
                         break;
 
@@ -285,13 +282,18 @@ namespace LoadTester
                         while (m_looper)
                         {
                             Thread.Sleep(0);
-                            Interlocked.Increment(ref m_looped);
+
+                            ++m_looped;
+                            Thread.MemoryBarrier();
                         }
                         break;
 
                     case LoadType.EmptyLoop:
                         while (m_looper)
-                            Interlocked.Increment(ref m_looped);
+                        {
+                            ++m_looped;
+                            Thread.MemoryBarrier();
+                        }
                         break;
 
                     case LoadType.SpinWait:
@@ -311,7 +313,10 @@ namespace LoadTester
                         while (m_looper)
                         {
                             MemoryPressureFunction();
-                            Interlocked.Increment(ref m_looped);
+                            {
+                                ++m_looped;
+                                Thread.MemoryBarrier();
+                            }
                         }
                         break;
 

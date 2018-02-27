@@ -134,12 +134,13 @@ namespace LoadTester
                 for (int i = 0; i < ThreadWrappers.Count; i++)
                 {
                     var threadWrapper = ThreadWrappers[i];
-                    double threadWrapperLooped = threadWrapper.Looped;
+                    var wrapperLooped = threadWrapper.Looped;
+                    double threadWrapperLooped = wrapperLooped - threadWrapper.LoopedPreviously;
                     threadWrapper.Speeds[intervalIndex] = threadWrapperLooped/milliseconds;
+                    threadWrapper.LoopedPreviously = wrapperLooped;
+
                     if (needShifting)
                         ShiftArrayValues(threadWrapper.Speeds);
-
-                    threadWrapper.Looped = 0;
                 }
                 m_threadCollectionBusy = 0;
 
