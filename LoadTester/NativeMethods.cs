@@ -10,8 +10,25 @@ namespace LoadTester
 {
     public static class NativeMethods
     {
-        [DllImport( "user32.dll", CharSet = CharSet.Unicode )]
+        [DllImport( "user32.dll", CharSet = CharSet.Unicode, SetLastError = true)]
         public static extern void SendMessage( IntPtr p_hWnd, uint p_msg, IntPtr p_wParam, IntPtr p_lParam );
+
+        // P/Invoke constants
+        public const int WM_SYSCOMMAND = 0x112;
+        public const UInt32 WM_NCACTIVATE = 0x0086;
+        public const int MF_STRING = 0x0;
+        public const int MF_SEPARATOR = 0x800;
+
+        // P/Invoke declarations
+        [DllImport("user32.dll", CharSet = CharSet.Auto, SetLastError = true)]
+        public static extern IntPtr GetSystemMenu(IntPtr hWnd, bool bRevert);
+
+        [DllImport("user32.dll", CharSet = CharSet.Auto, SetLastError = true)]
+        public static extern bool AppendMenu(IntPtr hMenu, int uFlags, int uIDNewItem, string lpNewItem);
+
+        [DllImport("user32.dll", CharSet = CharSet.Auto, SetLastError = true)]
+        public static extern bool InsertMenu(IntPtr hMenu, int uPosition, int uFlags, int uIDNewItem, string lpNewItem);
+
 
         public const uint WS_EX_COMPOSITED = 0x02000000;
         public const uint WM_SETREDRAW = 0xB;
@@ -87,7 +104,7 @@ namespace LoadTester
         [DllImport( "kernel32.dll", SetLastError = true )]
         public static extern bool SetThreadPriority( IntPtr hThread, ThreadPriority nPriority );
 
-        [DllImport( "kernel32.dll" )]
+        [DllImport( "kernel32.dll", SetLastError = true)]
         public static extern UIntPtr SetThreadAffinityMask( IntPtr hThread,
             UIntPtr dwThreadAffinityMask );
 

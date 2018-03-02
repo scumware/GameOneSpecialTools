@@ -36,6 +36,8 @@ namespace LoadTester
         private ThreadStart m_threadFunctionDelegeteReference;
 
         private bool m_disposed;
+        private string m_lastErrorMessage;
+        private UInt32 m_previousAfinnity;
 
         static unsafe ThreadWrapper()
         {
@@ -51,7 +53,6 @@ namespace LoadTester
             }
 
             AfinnityArray = new BitArray();
-            Afinnity = UInt32.MaxValue;
             AfinnityArray.SetCount(Environment.ProcessorCount);
             AfinnityArray.Changed += OnAfinnityChanged;
 
@@ -131,6 +132,16 @@ namespace LoadTester
             }
         }
 
+        public string LastErrorMessage
+        {
+            get { return m_lastErrorMessage; }
+            set
+            {
+                m_lastErrorMessage = value;
+                OnPropertyChanged("LastErrorMessage");
+            }
+        }
+
 
         public event PropertyChangedEventHandler PropertyChanged;
 
@@ -168,8 +179,34 @@ namespace LoadTester
 
         private void OnAfinnityChanged(object p_sender, EventArgs p_args)
         {
-            NativeMethods.SetThreadAffinityMask(m_threadHandle, (UIntPtr) AfinnityArray.Value);
+            SetAfinnityMask();
             OnPropertyChanged("Afinnity");
+        }
+
+        private void SetAfinnityMask()
+        {
+            var afinnityArrayValue = (UInt32)AfinnityArray.Value;
+            afinnityArrayValue &= UInt32.MaxValue;
+
+            var result = NativeMethods.SetThreadAffinityMask(m_threadHandle, (UIntPtr) afinnityArrayValue);
+
+            var lastError = Marshal.GetLastWin32Error();
+            if (lastError != 0)
+            {
+                LastErrorMessage = new Win32Exception(lastError).Message;
+
+                // ReSharper disable once DelegateSubtraction
+                AfinnityArray.Changed -= OnAfinnityChanged;
+                Afinnity = m_previousAfinnity;
+                OnPropertyChanged("Afinnity");
+                AfinnityArray.Changed += OnAfinnityChanged;
+                LastErrorMessage = string.Empty;
+            }
+            else
+            {
+                m_previousAfinnity = (UInt32) result;
+                LastErrorMessage = string.Empty;
+            }
         }
 
         private void Reinit()
@@ -200,6 +237,8 @@ namespace LoadTester
             uint lpThreadId;
             m_threadHandle = (IntPtr) StartThread(ThreadFunc, out lpThreadId, 0, p_createSuspended);
             ThreadId = lpThreadId;
+            m_previousAfinnity = (UInt32)NativeMethods.SetThreadAffinityMask(m_threadHandle, (UIntPtr) UInt32.MaxValue);
+            Afinnity = m_previousAfinnity;
         }
 
 
@@ -216,8 +255,17 @@ namespace LoadTester
                 dwCreationFlags |= NativeMethods.ThreadCreationFlags.CREATE_SUSPENDED;
             }
             uint dwHandle = NativeMethods.CreateThread(null, (uint) StackSize, p_threadFunc, lpParam, dwCreationFlags, out p_lpThreadId);
+            var lastWin32Error = Marshal.GetLastWin32Error();
             if (dwHandle == 0)
-                throw new Exception("Unable to create thread!");
+            {
+                var win32Exception = new Win32Exception(lastWin32Error);
+                LastErrorMessage = win32Exception.Message;
+                throw win32Exception;
+            }
+            else
+            {
+                LastErrorMessage = string.Empty;
+            }
 
             if (p_createSuspended)
             {
@@ -234,21 +282,33 @@ namespace LoadTester
                     return;
 
                 case ThreadState.Suspended:
-                    m_looper = m_restartLoop = false;
-
                     NativeMethods.ResumeThread((uint) m_threadHandle);
-                    while (p_wait  &&  (false == m_looper)) 
-                        Thread.SpinWait(10);
+                    var lastError = Marshal.GetLastWin32Error();
+                    if (lastError != 0)
+                    {
+                        LastErrorMessage = new Win32Exception(lastError).Message;
+                    }
+                    else
+                    {
+                        LastErrorMessage = string.Empty;
+                    }
+                    StopAliveThreadLoopAndWait(p_wait);
                     break;
 
                 case ThreadState.Started:
-                    m_restartLoop = false;
-                    Thread.MemoryBarrier();
-                    m_looper = false;
-                    Thread.MemoryBarrier();
-                    while (p_wait && (false == m_stopped))
-                        Thread.SpinWait(10);
+                    StopAliveThreadLoopAndWait(p_wait);
                     break;
+            }
+        }
+
+        private void StopAliveThreadLoopAndWait(bool p_wait)
+        {
+            while (p_wait && (false == m_stopped))
+            {
+                m_restartLoop = false;
+                Thread.MemoryBarrier();
+                m_looper = false;
+                Thread.SpinWait(10);
             }
         }
 
@@ -257,11 +317,22 @@ namespace LoadTester
             m_stopped = false;
             State = ThreadState.Started;
 
-            NativeMethods.SetThreadAffinityMask(m_threadHandle, (UIntPtr) Afinnity);
+            SetAfinnityMask();
+
             Thread.BeginCriticalRegion();
+            int lastError;
             do
             {
                 NativeMethods.SetThreadPriority(m_threadHandle, m_priority);
+                lastError = Marshal.GetLastWin32Error();
+                if (lastError != 0)
+                {
+                    LastErrorMessage = new Win32Exception(lastError).Message;
+                }
+                else
+                {
+                    LastErrorMessage = string.Empty;
+                }
 
                 m_looper = true;
                 Thread.MemoryBarrier();
@@ -329,6 +400,16 @@ namespace LoadTester
             Thread.EndCriticalRegion();
 
             NativeMethods.CloseHandle(m_threadHandle);
+            lastError = Marshal.GetLastWin32Error();
+            if (lastError != 0)
+            {
+                LastErrorMessage = new Win32Exception(lastError).Message;
+            }
+            else
+            {
+                LastErrorMessage = string.Empty;
+            }
+
             Reinit();
         }
 

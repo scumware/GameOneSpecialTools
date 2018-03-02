@@ -7,6 +7,7 @@ using System.Linq;
 using System.Text;
 using System.Threading;
 using System.Windows.Forms;
+using Timer = System.Windows.Forms.Timer;
 
 namespace LoadTester
 {
@@ -116,6 +117,52 @@ namespace LoadTester
             {
                 UpdateAfinnity();
             }
+            if (p_propertyChangedEventArgs.PropertyName == "LastErrorMessage")
+            {
+                UpdateErrorState();
+            }
+        }
+
+        private DateTime? m_showedErrorTime = null;
+        private void UpdateErrorState()
+        {
+            if (m_showedErrorTime.HasValue)
+            {
+                var errorVisibilityTime = DateTime.Now - m_showedErrorTime.Value;
+                if (errorVisibilityTime.TotalMilliseconds < 500)
+                {
+                    int duration = 500; //in milliseconds
+                    Timer timer = new Timer();
+                    timer.Interval = duration;
+
+                    timer.Tick += (arg1, arg2) =>
+                    {
+                        RefreshDisplayeError();
+                        timer.Stop();
+                            timer.Dispose();
+                    };
+
+                    timer.Start();
+                }
+                else
+                {
+                    RefreshDisplayeError();
+                }
+            }
+            else
+            {
+                RefreshDisplayeError();
+            }
+        }
+
+        private void RefreshDisplayeError()
+        {
+            var lastErrorMessage = m_wrapper.LastErrorMessage;
+            var errorVisible = false == string.IsNullOrEmpty(lastErrorMessage);
+
+            lblError.Text = lastErrorMessage;
+            lblError.Visible = errorVisible;
+            m_showedErrorTime = errorVisible ? (DateTime?) DateTime.Now : null;
         }
 
         private void RefreshAll()
@@ -126,6 +173,7 @@ namespace LoadTester
 
             labeledComboLoad.Combo.SelectedItem = m_wrapper.LoadType;
             labeledComboPriority.Combo.SelectedItem = m_wrapper.Priority;
+            UpdateErrorState();
         }
 
         private bool m_refreshAfinnityInprogress = false;
@@ -159,7 +207,7 @@ namespace LoadTester
                     checkBox.AutoSize = true;
                     checkBox.BackColor = Color.Transparent;
                     checkBox.ForeColor = Color.YellowGreen;
-                    checkBox.Text = "CPU " + (count - index);
+                    checkBox.Text = "CPU " + (count - index - 1);
                     checkBox.Tag = index;
                     checkBox.CheckStateChanged += CheckBoxOnCheckStateChanged;
                     flowPanelAfinnity.Controls.Add(checkBox);

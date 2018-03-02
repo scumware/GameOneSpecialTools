@@ -172,5 +172,39 @@ namespace LoadTester
         {
             timer.Enabled = !timer.Enabled;
         }
+
+        // ReSharper disable once InconsistentNaming
+        private int SYSMENU_ABOUT_ID = 0x1;
+
+        protected override void OnHandleCreated(EventArgs e)
+        {
+            base.OnHandleCreated(e);
+
+            // Get a handle to a copy of this form's system (window) menu
+            IntPtr hSysMenu = NativeMethods.GetSystemMenu(this.Handle, false);
+
+            // Add a separator
+            NativeMethods.AppendMenu(hSysMenu, NativeMethods.MF_SEPARATOR, 0, string.Empty);
+
+            // Add the About menu item
+            NativeMethods.AppendMenu(hSysMenu, NativeMethods.MF_STRING, SYSMENU_ABOUT_ID, "&About…");
+        }
+
+        protected override void WndProc(ref Message m)
+        {
+            base.WndProc(ref m);
+
+            // Test if the About item was selected from the system menu
+            if ((m.Msg == NativeMethods.WM_SYSCOMMAND) && ((int)m.WParam == SYSMENU_ABOUT_ID))
+            {
+                var aboutDlg = new AboutForm();
+                aboutDlg.Show(this);
+                {
+                    var x = Location.X + (Width - aboutDlg.Width) / 2;
+                    var y = Location.Y + (Height - aboutDlg.Height) / 2;
+                    aboutDlg.Location = new Point(Math.Max(x, 0), Math.Max(y, 0));
+                }
+            }
+        }
     }
 }

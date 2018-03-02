@@ -23,6 +23,7 @@
             this.btnStartStop = new System.Windows.Forms.Button();
             this.labeledComboPriority = new LoadTester.LabeledCombo();
             this.labeledComboLoad = new LoadTester.LabeledCombo();
+            this.lblError = new System.Windows.Forms.Label();
             this.tableMain.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).BeginInit();
             this.SuspendLayout();
@@ -35,20 +36,20 @@
             this.tableMain.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle());
             this.tableMain.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle());
             this.tableMain.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle());
-            this.tableMain.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 20F));
             this.tableMain.Controls.Add(this.pictureBox1, 0, 0);
             this.tableMain.Controls.Add(this.flowPanelAfinnity, 1, 0);
             this.tableMain.Controls.Add(this.btnStartStop, 3, 0);
             this.tableMain.Controls.Add(this.labeledComboPriority, 2, 0);
             this.tableMain.Controls.Add(this.labeledComboLoad, 2, 1);
+            this.tableMain.Controls.Add(this.lblError, 0, 2);
             this.tableMain.Location = new System.Drawing.Point(0, 0);
             this.tableMain.Margin = new System.Windows.Forms.Padding(0);
             this.tableMain.Name = "tableMain";
-            this.tableMain.RowCount = 2;
+            this.tableMain.RowCount = 3;
             this.tableMain.RowStyles.Add(new System.Windows.Forms.RowStyle());
             this.tableMain.RowStyles.Add(new System.Windows.Forms.RowStyle());
-            this.tableMain.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 20F));
-            this.tableMain.Size = new System.Drawing.Size(554, 78);
+            this.tableMain.RowStyles.Add(new System.Windows.Forms.RowStyle());
+            this.tableMain.Size = new System.Drawing.Size(554, 91);
             this.tableMain.TabIndex = 0;
             // 
             // pictureBox1
@@ -158,6 +159,17 @@
             this.labeledComboLoad.TabIndex = 3;
             this.labeledComboLoad.SelectedValueChanged += new System.EventHandler(this.labeledComboLoad_SelectedValueChanged);
             // 
+            // lblError
+            // 
+            this.lblError.AutoSize = true;
+            this.tableMain.SetColumnSpan(this.lblError, 4);
+            this.lblError.ForeColor = System.Drawing.Color.Red;
+            this.lblError.Location = new System.Drawing.Point(3, 78);
+            this.lblError.Name = "lblError";
+            this.lblError.Size = new System.Drawing.Size(0, 13);
+            this.lblError.TabIndex = 4;
+            this.lblError.Visible = false;
+            // 
             // ThreadControl
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -185,5 +197,6 @@
         private System.Windows.Forms.FlowLayoutPanel flowPanelAfinnity;
         private LabeledCombo labeledComboPriority;
         private LabeledCombo labeledComboLoad;
+        private System.Windows.Forms.Label lblError;
     }
 }
