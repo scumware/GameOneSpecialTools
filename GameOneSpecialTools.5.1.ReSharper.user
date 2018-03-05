@@ -1,0 +1,55 @@
+<Configuration>
+  <SettingsComponent>
+    <string />
+    <integer />
+    <boolean>
+      <setting name="livetemplates.csharp.usevar">True</setting>
+      <setting name="SolutionAnalysisEnabled">False</setting>
+    </boolean>
+  </SettingsComponent>
+  <RecentFiles>
+    <RecentFiles>
+      <File id="AA63E286-37CE-4D82-9166-898C433FAE9F/f:NativeMethods.cs" caret="7488" fromTop="12" />
+      <File id="AA63E286-37CE-4D82-9166-898C433FAE9F/f:ThreadWrapper.cs" caret="2701" fromTop="12" />
+      <File id="C47A93BE-0D42-4C84-97EB-AF5AD85E1EEC/f:UnitTest1.cs" caret="581" fromTop="21" />
+    </RecentFiles>
+    <RecentEdits>
+      <File id="AA63E286-37CE-4D82-9166-898C433FAE9F/f:NativeMethods.cs" caret="3455" fromTop="12" />
+      <File id="AA63E286-37CE-4D82-9166-898C433FAE9F/f:NativeMethods.cs" caret="7488" fromTop="12" />
+      <File id="AA63E286-37CE-4D82-9166-898C433FAE9F/f:ThreadWrapper.cs" caret="2701" fromTop="12" />
+      <File id="C47A93BE-0D42-4C84-97EB-AF5AD85E1EEC/f:UnitTest1.cs" caret="614" fromTop="21" />
+    </RecentEdits>
+  </RecentFiles>
+  <NAntValidationSettings>
+    <NAntPath value="" />
+  </NAntValidationSettings>
+  <UnitTestRunner>
+    <Providers />
+  </UnitTestRunner>
+  <UnitTestRunnerNUnit>
+    <NUnitInstallDir IsNull="False">
+    </NUnitInstallDir>
+    <UseAddins>Never</UseAddins>
+  </UnitTestRunnerNUnit>
+  <CompletionStatisticsManager>
+    <ItemStatistics item="Default">
+      <Item value="uint" priority="2" />
+      <Item value="var" priority="0" />
+      <Item value="new" priority="0" />
+      <Item value="bitArray" priority="1" />
+      <Item value="Assert`0" priority="0" />
+      <Item value="foreach" priority="0" />
+      <Item value="false" priority="0" />
+    </ItemStatistics>
+    <ItemStatistics item="Qualified:LoadTester.BitArray">
+      <Item value="SetCount`0" priority="0" />
+      <Item value="Value" priority="0" />
+    </ItemStatistics>
+    <ItemStatistics item="Qualified:@Microsoft.VisualStudio.TestTools.UnitTesting.Assert">
+      <Item value="AreEqual`0" priority="0" />
+    </ItemStatistics>
+    <ItemStatistics item="Qualified:@System.UInt64">
+      <Item value="MaxValue" priority="0" />
+    </ItemStatistics>
+  </CompletionStatisticsManager>
+</Configuration>

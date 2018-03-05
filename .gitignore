@@ -53,3 +53,7 @@ Temporary Items
 *.suo
 *.suo
 *.ide
+*.bin
+
+#Resharper directories and files
+*_ReSharper.*

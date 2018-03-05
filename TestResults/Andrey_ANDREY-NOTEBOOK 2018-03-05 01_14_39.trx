@@ -1,0 +1,33 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<TestRun id="fd326c5c-27de-4c04-aa80-99dafed12d5b" name="Andrey@ANDREY-NOTEBOOK 2018-03-05 01:14:39" runUser="ANDREY-NOTEBOOK\Andrey" xmlns="http://microsoft.com/schemas/VisualStudio/TeamTest/2010">
+  <TestSettings name="Local" id="b87cf3a4-b826-4c62-be4a-9f054835810b">
+    <Description>These are default test settings for a local test run.</Description>
+    <Deployment enabled="false" runDeploymentRoot="Andrey_ANDREY-NOTEBOOK 2018-03-05 01_14_39" />
+    <Execution>
+      <TestTypeSpecific />
+      <AgentRule name="Execution Agents">
+      </AgentRule>
+    </Execution>
+  </TestSettings>
+  <Times creation="2018-03-05T01:14:39.9571412+03:00" queuing="2018-03-05T01:14:52.1986388+03:00" start="2018-03-05T01:14:52.4706110+03:00" finish="2018-03-05T01:14:54.5078566+03:00" />
+  <ResultSummary outcome="Completed">
+    <Counters total="1" executed="1" passed="1" error="0" failed="0" timeout="0" aborted="0" inconclusive="0" passedButRunAborted="0" notRunnable="0" notExecuted="0" disconnected="0" warning="0" completed="0" inProgress="0" pending="0" />
+  </ResultSummary>
+  <TestDefinitions>
+    <UnitTest name="TestMethod1" storage="c:\progs\github\gameonespecialtools\testproject1\bin\debug\testproject1.dll" id="59863143-3238-122e-4d8a-637b491cc755">
+      <Execution id="0f7d5b0c-5917-433b-9293-587ad4388cba" />
+      <TestMethod codeBase="C:/progs/GitHub/GameOneSpecialTools/TestProject1/bin/Debug/TestProject1.DLL" adapterTypeName="Microsoft.VisualStudio.TestTools.TestTypes.Unit.UnitTestAdapter, Microsoft.VisualStudio.QualityTools.Tips.UnitTest.Adapter, Version=10.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a" className="TestProject1.UnitTest1, TestProject1, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null" name="TestMethod1" />
+    </UnitTest>
+  </TestDefinitions>
+  <TestLists>
+    <TestList name="Results Not in a List" id="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestList name="All Loaded Results" id="19431567-8539-422a-85d7-44ee4e166bda" />
+  </TestLists>
+  <TestEntries>
+    <TestEntry testId="59863143-3238-122e-4d8a-637b491cc755" executionId="0f7d5b0c-5917-433b-9293-587ad4388cba" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+  </TestEntries>
+  <Results>
+    <UnitTestResult executionId="0f7d5b0c-5917-433b-9293-587ad4388cba" testId="59863143-3238-122e-4d8a-637b491cc755" testName="TestMethod1" computerName="ANDREY-NOTEBOOK" duration="00:00:00.0482621" startTime="2018-03-05T01:14:52.7614907+03:00" endTime="2018-03-05T01:14:53.9719553+03:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="0f7d5b0c-5917-433b-9293-587ad4388cba">
+    </UnitTestResult>
+  </Results>
+</TestRun>

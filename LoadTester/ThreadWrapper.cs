@@ -93,7 +93,9 @@ namespace LoadTester
             }
         }
 
+#if !Net40
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
+#endif
         private void RestartLoop()
         {
             if (false == m_stopped)

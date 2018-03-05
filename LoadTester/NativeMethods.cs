@@ -92,7 +92,7 @@ namespace LoadTester
         );
 
         [Flags]
-        public enum ThreadCreationFlags : UInt32
+        public enum ThreadCreationFlags : uint 
         {
             CREATE_NORMAL = 0
             ,
@@ -195,7 +195,7 @@ namespace LoadTester
         [Flags]
         // ReSharper disable once BuiltInTypeReferenceStyle
         // ReSharper disable once EnumUnderlyingTypeIsInt
-        public enum ThreadAccess :Int32
+        public enum ThreadAccess :uint 
         {
             TERMINATE = (0x0001),
             SUSPEND_RESUME = (0x0002),
