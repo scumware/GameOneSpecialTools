@@ -55,5 +55,6 @@ Temporary Items
 *.ide
 *.bin
 
+
 #Resharper directories and files
 *_ReSharper.*
