@@ -114,6 +114,21 @@ namespace LoadTester
         [DllImport("kernel32.dll")]
         public static extern IntPtr GetCurrentThread();
 
+        [DllImport("kernel32.dll")]
+        public static extern IntPtr GetCurrentProcess();
+
+        [DllImport( "kernel32.dll", SetLastError = true )]
+        public static extern bool SetProcessAffinityMask( 
+            [In] IntPtr hProcess,
+            [In]  UIntPtr dwThreadAffinityMask );
+
+        [DllImport( "kernel32.dll", SetLastError = true )]
+        public static extern bool GetProcessAffinityMask(
+          [In]  IntPtr hProcess,
+          [Out] out UIntPtr lpProcessAffinityMask,
+          [Out] out UIntPtr lpSystemAffinityMask
+        );
+
         [DllImport( "kernel32.dll", SetLastError = true )]
         public static extern IntPtr OpenThread( ThreadAccess dwDesiredAccess, bool bInheritHandle,
             uint dwThreadId );

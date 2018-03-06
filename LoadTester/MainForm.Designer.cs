@@ -30,8 +30,8 @@
         private void InitializeComponent()
         {
             this.components = new System.ComponentModel.Container();
-            System.Windows.Forms.DataVisualization.Charting.ChartArea chartArea2 = new System.Windows.Forms.DataVisualization.Charting.ChartArea();
-            System.Windows.Forms.DataVisualization.Charting.Legend legend2 = new System.Windows.Forms.DataVisualization.Charting.Legend();
+            System.Windows.Forms.DataVisualization.Charting.ChartArea chartArea1 = new System.Windows.Forms.DataVisualization.Charting.ChartArea();
+            System.Windows.Forms.DataVisualization.Charting.Legend legend1 = new System.Windows.Forms.DataVisualization.Charting.Legend();
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(MainForm));
             this.timer = new System.Windows.Forms.Timer(this.components);
             this.tableMain = new LoadTester.DoubleBufferedTableLayoutPanel();
@@ -39,10 +39,12 @@
             this.flowLayoutPanel = new System.Windows.Forms.FlowLayoutPanel();
             this.chart1 = new System.Windows.Forms.DataVisualization.Charting.Chart();
             this.tableBottom = new System.Windows.Forms.TableLayoutPanel();
+            this.flowPanelAfinnity = new System.Windows.Forms.FlowLayoutPanel();
             this.btnStop = new System.Windows.Forms.Button();
             this.btnStart = new System.Windows.Forms.Button();
             this.btnAdd = new System.Windows.Forms.Button();
             this.btnFill = new System.Windows.Forms.Button();
+            this.lblProcessAffinnityMask = new System.Windows.Forms.Label();
             this.tableMain.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.splitContainer)).BeginInit();
             this.splitContainer.Panel1.SuspendLayout();
@@ -117,40 +119,40 @@
             // 
             this.chart1.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(52)))), ((int)(((byte)(46)))), ((int)(((byte)(46)))), ((int)(((byte)(46)))));
             this.chart1.BorderlineColor = System.Drawing.Color.Red;
-            chartArea2.AxisX.IsStartedFromZero = false;
-            chartArea2.AxisX.LabelStyle.ForeColor = System.Drawing.Color.YellowGreen;
-            chartArea2.AxisX.LineColor = System.Drawing.Color.Green;
-            chartArea2.AxisX.MajorGrid.LineColor = System.Drawing.Color.Green;
-            chartArea2.AxisX.MajorGrid.LineDashStyle = System.Windows.Forms.DataVisualization.Charting.ChartDashStyle.Dot;
-            chartArea2.AxisX.MajorTickMark.LineColor = System.Drawing.Color.DarkGreen;
-            chartArea2.AxisX.MinorGrid.LineColor = System.Drawing.Color.Bisque;
-            chartArea2.AxisX.MinorTickMark.LineColor = System.Drawing.Color.DimGray;
-            chartArea2.AxisX.ScaleBreakStyle.LineColor = System.Drawing.Color.DarkOliveGreen;
-            chartArea2.AxisX.Title = "Time";
-            chartArea2.AxisX.TitleForeColor = System.Drawing.Color.LimeGreen;
-            chartArea2.AxisX2.TitleForeColor = System.Drawing.Color.ForestGreen;
-            chartArea2.AxisY.LabelStyle.ForeColor = System.Drawing.Color.YellowGreen;
-            chartArea2.AxisY.LineColor = System.Drawing.Color.Green;
-            chartArea2.AxisY.MajorGrid.LineColor = System.Drawing.Color.Green;
-            chartArea2.AxisY.ScaleBreakStyle.LineColor = System.Drawing.Color.DarkGreen;
-            chartArea2.AxisY.Title = "Iterations";
-            chartArea2.AxisY.TitleForeColor = System.Drawing.Color.YellowGreen;
-            chartArea2.BackColor = System.Drawing.Color.Transparent;
-            chartArea2.BorderColor = System.Drawing.Color.ForestGreen;
-            chartArea2.Name = "ChartArea1";
-            this.chart1.ChartAreas.Add(chartArea2);
+            chartArea1.AxisX.IsStartedFromZero = false;
+            chartArea1.AxisX.LabelStyle.ForeColor = System.Drawing.Color.YellowGreen;
+            chartArea1.AxisX.LineColor = System.Drawing.Color.Green;
+            chartArea1.AxisX.MajorGrid.LineColor = System.Drawing.Color.Green;
+            chartArea1.AxisX.MajorGrid.LineDashStyle = System.Windows.Forms.DataVisualization.Charting.ChartDashStyle.Dot;
+            chartArea1.AxisX.MajorTickMark.LineColor = System.Drawing.Color.DarkGreen;
+            chartArea1.AxisX.MinorGrid.LineColor = System.Drawing.Color.Bisque;
+            chartArea1.AxisX.MinorTickMark.LineColor = System.Drawing.Color.DimGray;
+            chartArea1.AxisX.ScaleBreakStyle.LineColor = System.Drawing.Color.DarkOliveGreen;
+            chartArea1.AxisX.Title = "Time";
+            chartArea1.AxisX.TitleForeColor = System.Drawing.Color.LimeGreen;
+            chartArea1.AxisX2.TitleForeColor = System.Drawing.Color.ForestGreen;
+            chartArea1.AxisY.LabelStyle.ForeColor = System.Drawing.Color.YellowGreen;
+            chartArea1.AxisY.LineColor = System.Drawing.Color.Green;
+            chartArea1.AxisY.MajorGrid.LineColor = System.Drawing.Color.Green;
+            chartArea1.AxisY.ScaleBreakStyle.LineColor = System.Drawing.Color.DarkGreen;
+            chartArea1.AxisY.Title = "Iterations";
+            chartArea1.AxisY.TitleForeColor = System.Drawing.Color.YellowGreen;
+            chartArea1.BackColor = System.Drawing.Color.Transparent;
+            chartArea1.BorderColor = System.Drawing.Color.ForestGreen;
+            chartArea1.Name = "ChartArea1";
+            this.chart1.ChartAreas.Add(chartArea1);
             this.chart1.Dock = System.Windows.Forms.DockStyle.Fill;
-            legend2.BackColor = System.Drawing.Color.Transparent;
-            legend2.ForeColor = System.Drawing.Color.Green;
-            legend2.HeaderSeparatorColor = System.Drawing.Color.Green;
-            legend2.ItemColumnSeparatorColor = System.Drawing.Color.Green;
-            legend2.Name = "Legend1";
-            legend2.Title = "Threads";
-            legend2.TitleBackColor = System.Drawing.Color.Transparent;
-            legend2.TitleForeColor = System.Drawing.Color.Green;
-            legend2.TitleSeparator = System.Windows.Forms.DataVisualization.Charting.LegendSeparatorStyle.DoubleLine;
-            legend2.TitleSeparatorColor = System.Drawing.Color.Green;
-            this.chart1.Legends.Add(legend2);
+            legend1.BackColor = System.Drawing.Color.Transparent;
+            legend1.ForeColor = System.Drawing.Color.Green;
+            legend1.HeaderSeparatorColor = System.Drawing.Color.Green;
+            legend1.ItemColumnSeparatorColor = System.Drawing.Color.Green;
+            legend1.Name = "Legend1";
+            legend1.Title = "Threads";
+            legend1.TitleBackColor = System.Drawing.Color.Transparent;
+            legend1.TitleForeColor = System.Drawing.Color.Green;
+            legend1.TitleSeparator = System.Windows.Forms.DataVisualization.Charting.LegendSeparatorStyle.DoubleLine;
+            legend1.TitleSeparatorColor = System.Drawing.Color.Green;
+            this.chart1.Legends.Add(legend1);
             this.chart1.Location = new System.Drawing.Point(0, 0);
             this.chart1.Name = "chart1";
             this.chart1.Palette = System.Windows.Forms.DataVisualization.Charting.ChartColorPalette.None;
@@ -168,14 +170,16 @@
             this.tableBottom.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
             this.tableBottom.BackColor = System.Drawing.Color.Transparent;
             this.tableBottom.ColumnCount = 4;
-            this.tableBottom.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 49.54546F));
-            this.tableBottom.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 50.45454F));
+            this.tableBottom.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle());
+            this.tableBottom.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 100F));
             this.tableBottom.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle());
             this.tableBottom.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle());
+            this.tableBottom.Controls.Add(this.flowPanelAfinnity, 0, 1);
             this.tableBottom.Controls.Add(this.btnStop, 3, 1);
             this.tableBottom.Controls.Add(this.btnStart, 3, 0);
             this.tableBottom.Controls.Add(this.btnAdd, 2, 1);
             this.tableBottom.Controls.Add(this.btnFill, 2, 0);
+            this.tableBottom.Controls.Add(this.lblProcessAffinnityMask, 0, 0);
             this.tableBottom.Location = new System.Drawing.Point(0, 493);
             this.tableBottom.Margin = new System.Windows.Forms.Padding(0);
             this.tableBottom.Name = "tableBottom";
@@ -184,6 +188,18 @@
             this.tableBottom.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 50F));
             this.tableBottom.Size = new System.Drawing.Size(1008, 68);
             this.tableBottom.TabIndex = 5;
+            // 
+            // flowPanelAfinnity
+            // 
+            this.flowPanelAfinnity.AutoSize = true;
+            this.flowPanelAfinnity.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
+            this.flowPanelAfinnity.BackColor = System.Drawing.Color.Transparent;
+            this.flowPanelAfinnity.Location = new System.Drawing.Point(3, 34);
+            this.flowPanelAfinnity.Margin = new System.Windows.Forms.Padding(3, 0, 0, 0);
+            this.flowPanelAfinnity.Name = "flowPanelAfinnity";
+            this.flowPanelAfinnity.Size = new System.Drawing.Size(0, 0);
+            this.flowPanelAfinnity.TabIndex = 4;
+            this.flowPanelAfinnity.WrapContents = false;
             // 
             // btnStop
             // 
@@ -226,7 +242,7 @@
             this.btnAdd.FlatStyle = System.Windows.Forms.FlatStyle.Popup;
             this.btnAdd.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
             this.btnAdd.ForeColor = System.Drawing.Color.Yellow;
-            this.btnAdd.Location = new System.Drawing.Point(713, 42);
+            this.btnAdd.Location = new System.Drawing.Point(714, 42);
             this.btnAdd.Margin = new System.Windows.Forms.Padding(8, 8, 3, 3);
             this.btnAdd.MinimumSize = new System.Drawing.Size(140, 0);
             this.btnAdd.Name = "btnAdd";
@@ -243,7 +259,7 @@
             this.btnFill.FlatStyle = System.Windows.Forms.FlatStyle.Popup;
             this.btnFill.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
             this.btnFill.ForeColor = System.Drawing.Color.Yellow;
-            this.btnFill.Location = new System.Drawing.Point(713, 8);
+            this.btnFill.Location = new System.Drawing.Point(714, 8);
             this.btnFill.Margin = new System.Windows.Forms.Padding(8, 8, 3, 3);
             this.btnFill.MinimumSize = new System.Drawing.Size(140, 0);
             this.btnFill.Name = "btnFill";
@@ -252,6 +268,18 @@
             this.btnFill.Text = "Add";
             this.btnFill.UseVisualStyleBackColor = true;
             this.btnFill.Click += new System.EventHandler(this.button1_Click);
+            // 
+            // lblProcessAffinnityMask
+            // 
+            this.lblProcessAffinnityMask.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+            this.lblProcessAffinnityMask.AutoSize = true;
+            this.lblProcessAffinnityMask.ForeColor = System.Drawing.Color.Yellow;
+            this.lblProcessAffinnityMask.Location = new System.Drawing.Point(0, 18);
+            this.lblProcessAffinnityMask.Margin = new System.Windows.Forms.Padding(0, 0, 3, 3);
+            this.lblProcessAffinnityMask.Name = "lblProcessAffinnityMask";
+            this.lblProcessAffinnityMask.Size = new System.Drawing.Size(116, 13);
+            this.lblProcessAffinnityMask.TabIndex = 5;
+            this.lblProcessAffinnityMask.Text = "Process Affinnity mask:";
             // 
             // MainForm
             // 
@@ -294,6 +322,8 @@
         private System.Windows.Forms.DataVisualization.Charting.Chart chart1;
         private System.Windows.Forms.SplitContainer splitContainer;
         private System.Windows.Forms.Timer timer;
+        private System.Windows.Forms.FlowLayoutPanel flowPanelAfinnity;
+        private System.Windows.Forms.Label lblProcessAffinnityMask;
     }
 }
 

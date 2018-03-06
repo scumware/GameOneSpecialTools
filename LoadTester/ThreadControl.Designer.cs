@@ -75,6 +75,7 @@
             this.tableMain.SetRowSpan(this.flowPanelAfinnity, 2);
             this.flowPanelAfinnity.Size = new System.Drawing.Size(1, 0);
             this.flowPanelAfinnity.TabIndex = 2;
+            this.flowPanelAfinnity.WrapContents = false;
             // 
             // btnStartStop
             // 
