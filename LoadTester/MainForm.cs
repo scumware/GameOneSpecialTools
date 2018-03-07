@@ -20,8 +20,12 @@ namespace LoadTester
             m_processWrapper = new ProcessWrapper(NativeMethods.GetCurrentProcess());
             m_processWrapper.PropertyChanged += ProcessWrapperOnPropertyChanged;
 
+            cmbProcessPriority.DataSource = ProcessPriorityWrapper.AllValues;
+            cmbProcessPriority.SelectedItem = ProcessPriorityWrapper.IDLE_PRIORITY_CLASS;
+
             m_lastProcessPropsUpdateTime = DateTime.Now;
             UpdateAfinnity();
+
             NativeMethods.DisableProcessWindowsGhosting();
             ThreadsManager.Init();
         }
@@ -290,6 +294,11 @@ namespace LoadTester
                     aboutDlg.Location = new Point(Math.Max(x, 0), Math.Max(y, 0));
                 }
             }
+        }
+
+        private void cmbProcessPriority_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            m_processWrapper.SetPriority(((ProcessPriorityWrapper) cmbProcessPriority.SelectedItem).Value);
         }
     }
 }

@@ -1,6 +1,8 @@
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Diagnostics;
+using System.Runtime.InteropServices;
 using System.Threading;
 using System.Xml;
 
@@ -12,6 +14,7 @@ namespace LoadTester
         private const int Period = 10;
         private static IList<ThreadWrapper> m_threadWrappers;
 
+        private static volatile ThreadState m_state;
         private static long s_totalElapsed = 0;
         private static long[] s_times;
 
@@ -19,6 +22,45 @@ namespace LoadTester
         private static IntPtr s_waitableTimer;
         private static volatile int m_threadCollectionBusy;
         private static volatile bool s_disposed;
+        private static string m_lastErrorMessage;
+
+        /// <summary>
+        /// Magic! Do not remove
+        /// </summary>
+        private static ThreadStart m_threadFunctionDelegeteReference;
+
+
+        public static string LastErrorMessage
+        {
+            get { return m_lastErrorMessage; }
+            set
+            {
+                m_lastErrorMessage = value;
+                OnPropertyChanged("LastErrorMessage");
+            }
+        }
+
+
+        public static ThreadState State
+        {
+            get { return m_state; }
+            private set
+            {
+                m_state = value;
+                OnPropertyChanged("State");
+            }
+        }
+
+
+        public static event PropertyChangedEventHandler PropertyChanged;
+
+
+        static void OnPropertyChanged(string p_propertyName)
+        {
+            var handler = PropertyChanged;
+            if (handler != null)
+                handler(null, new PropertyChangedEventArgs(p_propertyName));
+        }
 
 
         public static long[] Times
@@ -67,10 +109,42 @@ namespace LoadTester
             for (int index = 0; index < s_times.Length; index++)
                 s_times[index] = -1;
 
-            var thread = new Thread(
-                UpdateSpeeds);
-            thread.Start();
-            thread.Priority = System.Threading.ThreadPriority.Highest;
+            uint threadId;
+            var threadHandle = StartThread(UpdateSpeeds, out threadId);
+            NativeMethods.SetThreadPriority((IntPtr) threadHandle, ThreadPriority.THREAD_PRIORITY_TIME_CRITICAL);
+        }
+
+
+        static unsafe uint StartThread(ThreadStart p_threadFunc, out uint p_lpThreadId, int StackSize = 0, bool p_createSuspended = false)
+        {
+            m_threadFunctionDelegeteReference = p_threadFunc;
+
+            uint i = 0;
+            uint* lpParam = &i;
+
+            var dwCreationFlags = NativeMethods.ThreadCreationFlags.CREATE_NORMAL;
+            if (p_createSuspended)
+            {
+                dwCreationFlags |= NativeMethods.ThreadCreationFlags.CREATE_SUSPENDED;
+            }
+            uint dwHandle = NativeMethods.CreateThread(null, (uint)StackSize, p_threadFunc, lpParam, dwCreationFlags, out p_lpThreadId);
+            var lastWin32Error = Marshal.GetLastWin32Error();
+            if (dwHandle == 0)
+            {
+                var win32Exception = new Win32Exception(lastWin32Error);
+                LastErrorMessage = win32Exception.Message;
+                throw win32Exception;
+            }
+            else
+            {
+                LastErrorMessage = string.Empty;
+            }
+
+            if (p_createSuspended)
+            {
+                State = ThreadState.Suspended;
+            }
+            return dwHandle;
         }
 
         private static Stopwatch m_stopwatch = new Stopwatch();

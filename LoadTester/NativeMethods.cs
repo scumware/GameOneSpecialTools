@@ -128,6 +128,20 @@ namespace LoadTester
           [Out] out UIntPtr lpProcessAffinityMask,
           [Out] out UIntPtr lpSystemAffinityMask
         );
+        [DllImport("kernel32.dll", CharSet = CharSet.Auto, SetLastError = true)]
+        public static extern bool SetPriorityClass(IntPtr handle, PriorityClass priorityClass);
+
+        public enum PriorityClass : uint
+        {
+            ABOVE_NORMAL_PRIORITY_CLASS = 0x8000,
+            BELOW_NORMAL_PRIORITY_CLASS = 0x4000,
+            HIGH_PRIORITY_CLASS = 0x80,
+            IDLE_PRIORITY_CLASS = 0x40,
+            NORMAL_PRIORITY_CLASS = 0x20,
+            PROCESS_MODE_BACKGROUND_BEGIN = 0x100000,// 'Windows Vista/2008 and higher
+            PROCESS_MODE_BACKGROUND_END = 0x200000,//   'Windows Vista/2008 and higher
+            REALTIME_PRIORITY_CLASS = 0x100
+        }
 
         [DllImport( "kernel32.dll", SetLastError = true )]
         public static extern IntPtr OpenThread( ThreadAccess dwDesiredAccess, bool bInheritHandle,

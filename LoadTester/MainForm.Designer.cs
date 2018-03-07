@@ -39,12 +39,14 @@
             this.flowLayoutPanel = new System.Windows.Forms.FlowLayoutPanel();
             this.chart1 = new System.Windows.Forms.DataVisualization.Charting.Chart();
             this.tableBottom = new System.Windows.Forms.TableLayoutPanel();
-            this.flowPanelAfinnity = new System.Windows.Forms.FlowLayoutPanel();
             this.btnStop = new System.Windows.Forms.Button();
             this.btnStart = new System.Windows.Forms.Button();
             this.btnAdd = new System.Windows.Forms.Button();
             this.btnFill = new System.Windows.Forms.Button();
             this.lblProcessAffinnityMask = new System.Windows.Forms.Label();
+            this.flowPanelAfinnity = new System.Windows.Forms.FlowLayoutPanel();
+            this.lblProcessPriority = new System.Windows.Forms.Label();
+            this.cmbProcessPriority = new System.Windows.Forms.ComboBox();
             this.tableMain.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.splitContainer)).BeginInit();
             this.splitContainer.Panel1.SuspendLayout();
@@ -100,7 +102,7 @@
             // 
             this.splitContainer.Panel2.Controls.Add(this.chart1);
             this.splitContainer.Size = new System.Drawing.Size(1008, 493);
-            this.splitContainer.SplitterDistance = 335;
+            this.splitContainer.SplitterDistance = 334;
             this.splitContainer.SplitterWidth = 5;
             this.splitContainer.TabIndex = 5;
             // 
@@ -112,7 +114,7 @@
             this.flowLayoutPanel.Location = new System.Drawing.Point(0, 0);
             this.flowLayoutPanel.Margin = new System.Windows.Forms.Padding(0);
             this.flowLayoutPanel.Name = "flowLayoutPanel";
-            this.flowLayoutPanel.Size = new System.Drawing.Size(1006, 333);
+            this.flowLayoutPanel.Size = new System.Drawing.Size(1006, 332);
             this.flowLayoutPanel.TabIndex = 6;
             // 
             // chart1
@@ -156,7 +158,7 @@
             this.chart1.Location = new System.Drawing.Point(0, 0);
             this.chart1.Name = "chart1";
             this.chart1.Palette = System.Windows.Forms.DataVisualization.Charting.ChartColorPalette.None;
-            this.chart1.Size = new System.Drawing.Size(1006, 151);
+            this.chart1.Size = new System.Drawing.Size(1006, 152);
             this.chart1.TabIndex = 5;
             this.chart1.Text = "chart1";
             this.chart1.DoubleClick += new System.EventHandler(this.chart1_DoubleClick);
@@ -174,12 +176,14 @@
             this.tableBottom.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 100F));
             this.tableBottom.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle());
             this.tableBottom.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle());
-            this.tableBottom.Controls.Add(this.flowPanelAfinnity, 0, 1);
             this.tableBottom.Controls.Add(this.btnStop, 3, 1);
             this.tableBottom.Controls.Add(this.btnStart, 3, 0);
             this.tableBottom.Controls.Add(this.btnAdd, 2, 1);
             this.tableBottom.Controls.Add(this.btnFill, 2, 0);
             this.tableBottom.Controls.Add(this.lblProcessAffinnityMask, 0, 0);
+            this.tableBottom.Controls.Add(this.flowPanelAfinnity, 1, 0);
+            this.tableBottom.Controls.Add(this.lblProcessPriority, 0, 1);
+            this.tableBottom.Controls.Add(this.cmbProcessPriority, 1, 1);
             this.tableBottom.Location = new System.Drawing.Point(0, 493);
             this.tableBottom.Margin = new System.Windows.Forms.Padding(0);
             this.tableBottom.Name = "tableBottom";
@@ -188,18 +192,6 @@
             this.tableBottom.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 50F));
             this.tableBottom.Size = new System.Drawing.Size(1008, 68);
             this.tableBottom.TabIndex = 5;
-            // 
-            // flowPanelAfinnity
-            // 
-            this.flowPanelAfinnity.AutoSize = true;
-            this.flowPanelAfinnity.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
-            this.flowPanelAfinnity.BackColor = System.Drawing.Color.Transparent;
-            this.flowPanelAfinnity.Location = new System.Drawing.Point(3, 34);
-            this.flowPanelAfinnity.Margin = new System.Windows.Forms.Padding(3, 0, 0, 0);
-            this.flowPanelAfinnity.Name = "flowPanelAfinnity";
-            this.flowPanelAfinnity.Size = new System.Drawing.Size(0, 0);
-            this.flowPanelAfinnity.TabIndex = 4;
-            this.flowPanelAfinnity.WrapContents = false;
             // 
             // btnStop
             // 
@@ -271,15 +263,54 @@
             // 
             // lblProcessAffinnityMask
             // 
-            this.lblProcessAffinnityMask.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+            this.lblProcessAffinnityMask.Anchor = System.Windows.Forms.AnchorStyles.Left;
             this.lblProcessAffinnityMask.AutoSize = true;
             this.lblProcessAffinnityMask.ForeColor = System.Drawing.Color.Yellow;
-            this.lblProcessAffinnityMask.Location = new System.Drawing.Point(0, 18);
+            this.lblProcessAffinnityMask.Location = new System.Drawing.Point(0, 9);
             this.lblProcessAffinnityMask.Margin = new System.Windows.Forms.Padding(0, 0, 3, 3);
             this.lblProcessAffinnityMask.Name = "lblProcessAffinnityMask";
             this.lblProcessAffinnityMask.Size = new System.Drawing.Size(116, 13);
             this.lblProcessAffinnityMask.TabIndex = 5;
             this.lblProcessAffinnityMask.Text = "Process Affinnity mask:";
+            // 
+            // flowPanelAfinnity
+            // 
+            this.flowPanelAfinnity.Anchor = System.Windows.Forms.AnchorStyles.Left;
+            this.flowPanelAfinnity.AutoSize = true;
+            this.flowPanelAfinnity.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
+            this.flowPanelAfinnity.BackColor = System.Drawing.Color.Transparent;
+            this.flowPanelAfinnity.Location = new System.Drawing.Point(122, 17);
+            this.flowPanelAfinnity.Margin = new System.Windows.Forms.Padding(3, 0, 0, 0);
+            this.flowPanelAfinnity.Name = "flowPanelAfinnity";
+            this.flowPanelAfinnity.Size = new System.Drawing.Size(0, 0);
+            this.flowPanelAfinnity.TabIndex = 4;
+            this.flowPanelAfinnity.WrapContents = false;
+            // 
+            // lblProcessPriority
+            // 
+            this.lblProcessPriority.Anchor = System.Windows.Forms.AnchorStyles.Left;
+            this.lblProcessPriority.AutoSize = true;
+            this.lblProcessPriority.ForeColor = System.Drawing.Color.Yellow;
+            this.lblProcessPriority.Location = new System.Drawing.Point(3, 44);
+            this.lblProcessPriority.Name = "lblProcessPriority";
+            this.lblProcessPriority.Size = new System.Drawing.Size(108, 13);
+            this.lblProcessPriority.TabIndex = 6;
+            this.lblProcessPriority.Text = "Process priority class:";
+            // 
+            // cmbProcessPriority
+            // 
+            this.cmbProcessPriority.Anchor = System.Windows.Forms.AnchorStyles.Left;
+            this.cmbProcessPriority.BackColor = System.Drawing.Color.Black;
+            this.cmbProcessPriority.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.cmbProcessPriority.DropDownWidth = 160;
+            this.cmbProcessPriority.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.cmbProcessPriority.ForeColor = System.Drawing.Color.LimeGreen;
+            this.cmbProcessPriority.FormattingEnabled = true;
+            this.cmbProcessPriority.Location = new System.Drawing.Point(122, 40);
+            this.cmbProcessPriority.Name = "cmbProcessPriority";
+            this.cmbProcessPriority.Size = new System.Drawing.Size(240, 21);
+            this.cmbProcessPriority.TabIndex = 7;
+            this.cmbProcessPriority.SelectedIndexChanged += new System.EventHandler(this.cmbProcessPriority_SelectedIndexChanged);
             // 
             // MainForm
             // 
@@ -324,6 +355,8 @@
         private System.Windows.Forms.Timer timer;
         private System.Windows.Forms.FlowLayoutPanel flowPanelAfinnity;
         private System.Windows.Forms.Label lblProcessAffinnityMask;
+        private System.Windows.Forms.Label lblProcessPriority;
+        private System.Windows.Forms.ComboBox cmbProcessPriority;
     }
 }
 
