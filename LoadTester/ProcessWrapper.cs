@@ -96,5 +96,19 @@ namespace LoadTester
             var handler = PropertyChanged;
             if (handler != null) handler(this, new PropertyChangedEventArgs(p_propertyName));
         }
+
+        public void SetPriority(NativeMethods.PriorityClass p_newPriorityClass)
+        {
+            NativeMethods.SetPriorityClass(m_processHandle, p_newPriorityClass);
+            var lastError = Marshal.GetLastWin32Error();
+            if (lastError != 0)
+            {
+                LastErrorMessage = new Win32Exception(lastError).Message;
+            }
+            else
+            {
+                LastErrorMessage = string.Empty;
+            }
+        }
     }
 }

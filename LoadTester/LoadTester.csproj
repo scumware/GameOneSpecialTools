@@ -113,6 +113,7 @@
       <DependentUpon>LabeledCombo.cs</DependentUpon>
     </Compile>
     <Compile Include="NativeMethods.cs" />
+    <Compile Include="ProcessPriorityWrapper.cs" />
     <Compile Include="ProcessWrapper.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\Annotations.cs" />
