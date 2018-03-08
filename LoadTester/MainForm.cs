@@ -21,7 +21,7 @@ namespace LoadTester
             m_processWrapper.PropertyChanged += ProcessWrapperOnPropertyChanged;
 
             cmbProcessPriority.DataSource = ProcessPriorityWrapper.AllValues;
-            cmbProcessPriority.SelectedItem = ProcessPriorityWrapper.IDLE_PRIORITY_CLASS;
+            cmbProcessPriority.SelectedItem = m_previousProcessPriority = ProcessPriorityWrapper.IDLE_PRIORITY_CLASS;
 
             m_lastProcessPropsUpdateTime = DateTime.Now;
             UpdateAfinnity();
@@ -264,6 +264,7 @@ namespace LoadTester
         private int SYSMENU_ABOUT_ID = 0x1;
         private bool m_refreshAfinnityInprogress;
         private readonly ProcessWrapper m_processWrapper;
+        private ProcessPriorityWrapper m_previousProcessPriority;
 
         protected override void OnHandleCreated(EventArgs e)
         {
@@ -296,9 +297,27 @@ namespace LoadTester
             }
         }
 
-        private void cmbProcessPriority_SelectedIndexChanged(object sender, EventArgs e)
+        private void cmbProcessPriority_SelectionChangeCommitted(object sender, EventArgs e)
         {
-            m_processWrapper.SetPriority(((ProcessPriorityWrapper) cmbProcessPriority.SelectedItem).Value);
+            var newValue = (ProcessPriorityWrapper)cmbProcessPriority.SelectedItem;
+            var operationResult = m_processWrapper.SetPriority(newValue.Value);
+            if (false == operationResult)
+            {
+                cmbProcessPriority.SelectedItem = m_previousProcessPriority;
+            }
+            else
+            {
+                m_previousProcessPriority = newValue;
+            }
+        }
+
+        private void chkBackgroundMode_CheckedChanged(object sender, EventArgs e)
+        {
+            bool operationResult = m_processWrapper.SetBackgroundMode(chkBackgroundMode.Checked);
+            if (false == operationResult)
+            {
+                chkBackgroundMode.Checked = !chkBackgroundMode.Checked;
+            }
         }
     }
 }

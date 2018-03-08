@@ -97,17 +97,64 @@ namespace LoadTester
             if (handler != null) handler(this, new PropertyChangedEventArgs(p_propertyName));
         }
 
-        public void SetPriority(NativeMethods.PriorityClass p_newPriorityClass)
+        public bool SetPriority(NativeMethods.PriorityClass p_newPriorityClass)
         {
             NativeMethods.SetPriorityClass(m_processHandle, p_newPriorityClass);
             var lastError = Marshal.GetLastWin32Error();
             if (lastError != 0)
             {
                 LastErrorMessage = new Win32Exception(lastError).Message;
+                return false;
             }
             else
             {
+                PriorityClass = p_newPriorityClass;
                 LastErrorMessage = string.Empty;
+                return true;
+            }
+        }
+
+        private NativeMethods.PriorityClass m_priorityClass;
+        private bool m_backgroundMode;
+
+        public NativeMethods.PriorityClass PriorityClass
+        {
+            get { return m_priorityClass; }
+            set
+            {
+                m_priorityClass = value;
+                OnPropertyChanged("PriorityClass");
+            }
+        }
+
+        public bool SetBackgroundMode(bool p_mode)
+        {
+            if (p_mode == m_backgroundMode)
+                return true;
+
+            NativeMethods.PriorityClass newPriorityClass;
+            if (p_mode)
+            {
+                newPriorityClass = NativeMethods.PriorityClass.PROCESS_MODE_BACKGROUND_BEGIN;
+            }
+            else
+            {
+                newPriorityClass = NativeMethods.PriorityClass.PROCESS_MODE_BACKGROUND_END;
+            }
+
+            NativeMethods.SetPriorityClass(m_processHandle,
+                                           newPriorityClass);
+            var lastError = Marshal.GetLastWin32Error();
+            if (lastError != 0)
+            {
+                LastErrorMessage = new Win32Exception(lastError).Message;
+                return false;
+            }
+            else
+            {
+                m_backgroundMode = p_mode;
+                LastErrorMessage = string.Empty;
+                return true;
             }
         }
     }

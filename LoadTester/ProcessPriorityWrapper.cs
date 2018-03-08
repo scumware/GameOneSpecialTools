@@ -11,8 +11,6 @@ namespace LoadTester
         public static readonly ProcessPriorityWrapper[] AllValues;
         public static readonly ProcessPriorityWrapper IDLE_PRIORITY_CLASS;
         public static readonly ProcessPriorityWrapper NORMAL_PRIORITY_CLASS;
-        private static ProcessPriorityWrapper BACKGROUND_BEGIN;
-        public static readonly ProcessPriorityWrapper PROCESS_MODE_BACKGROUND_END;
 
         public ProcessPriorityWrapper(NativeMethods.PriorityClass p_value)
         {
@@ -63,18 +61,19 @@ namespace LoadTester
 
         static ProcessPriorityWrapper()
         {
-            AllValues = new ProcessPriorityWrapper[Enum.GetValues(typeof(ThreadPriority)).Length];
-            PROCESS_MODE_BACKGROUND_END = new ProcessPriorityWrapper(NativeMethods.PriorityClass.PROCESS_MODE_BACKGROUND_END);
+            AllValues = new ProcessPriorityWrapper[Enum.GetValues(typeof(NativeMethods.PriorityClass)).Length - 2];
             /*
-;
+;            PROCESS_MODE_BACKGROUND_END = new ProcessPriorityWrapper(NativeMethods.PriorityClass.PROCESS_MODE_BACKGROUND_END);
+
+;            BACKGROUND_BEGIN = new ProcessPriorityWrapper(NativeMethods.PriorityClass.PROCESS_MODE_BACKGROUND_BEGIN);
+
             */
-            AllValues[0] = BACKGROUND_BEGIN = new ProcessPriorityWrapper(NativeMethods.PriorityClass.PROCESS_MODE_BACKGROUND_BEGIN);
-            AllValues[1] = IDLE_PRIORITY_CLASS = new ProcessPriorityWrapper(NativeMethods.PriorityClass.IDLE_PRIORITY_CLASS); ;
-            AllValues[2] = new ProcessPriorityWrapper(NativeMethods.PriorityClass.BELOW_NORMAL_PRIORITY_CLASS);
-            AllValues[3] = NORMAL_PRIORITY_CLASS = new ProcessPriorityWrapper(NativeMethods.PriorityClass.NORMAL_PRIORITY_CLASS);;
-            AllValues[4] = new ProcessPriorityWrapper(NativeMethods.PriorityClass.ABOVE_NORMAL_PRIORITY_CLASS);
-            AllValues[5] = new ProcessPriorityWrapper(NativeMethods.PriorityClass.ABOVE_NORMAL_PRIORITY_CLASS);
-            AllValues[6] = new ProcessPriorityWrapper(NativeMethods.PriorityClass.REALTIME_PRIORITY_CLASS);
+            AllValues[0] = IDLE_PRIORITY_CLASS = new ProcessPriorityWrapper(NativeMethods.PriorityClass.IDLE_PRIORITY_CLASS); ;
+            AllValues[1] = new ProcessPriorityWrapper(NativeMethods.PriorityClass.BELOW_NORMAL_PRIORITY_CLASS);
+            AllValues[2] = NORMAL_PRIORITY_CLASS = new ProcessPriorityWrapper(NativeMethods.PriorityClass.NORMAL_PRIORITY_CLASS);;
+            AllValues[3] = new ProcessPriorityWrapper(NativeMethods.PriorityClass.ABOVE_NORMAL_PRIORITY_CLASS);
+            AllValues[4] = new ProcessPriorityWrapper(NativeMethods.PriorityClass.HIGH_PRIORITY_CLASS);
+            AllValues[5] = new ProcessPriorityWrapper(NativeMethods.PriorityClass.REALTIME_PRIORITY_CLASS);
         }
 
     }

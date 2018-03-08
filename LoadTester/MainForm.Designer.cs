@@ -47,6 +47,7 @@
             this.flowPanelAfinnity = new System.Windows.Forms.FlowLayoutPanel();
             this.lblProcessPriority = new System.Windows.Forms.Label();
             this.cmbProcessPriority = new System.Windows.Forms.ComboBox();
+            this.chkBackgroundMode = new System.Windows.Forms.CheckBox();
             this.tableMain.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.splitContainer)).BeginInit();
             this.splitContainer.Panel1.SuspendLayout();
@@ -171,19 +172,21 @@
             this.tableBottom.AutoSize = true;
             this.tableBottom.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
             this.tableBottom.BackColor = System.Drawing.Color.Transparent;
-            this.tableBottom.ColumnCount = 4;
+            this.tableBottom.ColumnCount = 5;
+            this.tableBottom.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle());
+            this.tableBottom.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle());
             this.tableBottom.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle());
             this.tableBottom.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 100F));
             this.tableBottom.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle());
-            this.tableBottom.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle());
-            this.tableBottom.Controls.Add(this.btnStop, 3, 1);
-            this.tableBottom.Controls.Add(this.btnStart, 3, 0);
-            this.tableBottom.Controls.Add(this.btnAdd, 2, 1);
-            this.tableBottom.Controls.Add(this.btnFill, 2, 0);
             this.tableBottom.Controls.Add(this.lblProcessAffinnityMask, 0, 0);
             this.tableBottom.Controls.Add(this.flowPanelAfinnity, 1, 0);
             this.tableBottom.Controls.Add(this.lblProcessPriority, 0, 1);
             this.tableBottom.Controls.Add(this.cmbProcessPriority, 1, 1);
+            this.tableBottom.Controls.Add(this.btnStop, 4, 1);
+            this.tableBottom.Controls.Add(this.btnAdd, 3, 1);
+            this.tableBottom.Controls.Add(this.btnStart, 4, 0);
+            this.tableBottom.Controls.Add(this.chkBackgroundMode, 2, 1);
+            this.tableBottom.Controls.Add(this.btnFill, 3, 0);
             this.tableBottom.Location = new System.Drawing.Point(0, 493);
             this.tableBottom.Margin = new System.Windows.Forms.Padding(0);
             this.tableBottom.Name = "tableBottom";
@@ -310,7 +313,20 @@
             this.cmbProcessPriority.Name = "cmbProcessPriority";
             this.cmbProcessPriority.Size = new System.Drawing.Size(240, 21);
             this.cmbProcessPriority.TabIndex = 7;
-            this.cmbProcessPriority.SelectedIndexChanged += new System.EventHandler(this.cmbProcessPriority_SelectedIndexChanged);
+            this.cmbProcessPriority.SelectionChangeCommitted += new System.EventHandler(this.cmbProcessPriority_SelectionChangeCommitted);
+            // 
+            // chkBackgroundMode
+            // 
+            this.chkBackgroundMode.Anchor = System.Windows.Forms.AnchorStyles.Left;
+            this.chkBackgroundMode.AutoSize = true;
+            this.chkBackgroundMode.ForeColor = System.Drawing.Color.Yellow;
+            this.chkBackgroundMode.Location = new System.Drawing.Point(368, 42);
+            this.chkBackgroundMode.Name = "chkBackgroundMode";
+            this.chkBackgroundMode.Size = new System.Drawing.Size(113, 17);
+            this.chkBackgroundMode.TabIndex = 8;
+            this.chkBackgroundMode.Text = "Background mode";
+            this.chkBackgroundMode.UseVisualStyleBackColor = true;
+            this.chkBackgroundMode.CheckedChanged += new System.EventHandler(this.chkBackgroundMode_CheckedChanged);
             // 
             // MainForm
             // 
@@ -357,6 +373,7 @@
         private System.Windows.Forms.Label lblProcessAffinnityMask;
         private System.Windows.Forms.Label lblProcessPriority;
         private System.Windows.Forms.ComboBox cmbProcessPriority;
+        private System.Windows.Forms.CheckBox chkBackgroundMode;
     }
 }
 
