@@ -187,7 +187,7 @@ namespace LoadTester
 
         private void SetAfinnityMask()
         {
-            var afinnityArrayValue = (UInt32)AfinnityArray.Value;
+            UInt64 afinnityArrayValue = AfinnityArray.Value;
             afinnityArrayValue &= UInt32.MaxValue;
 
             var result = NativeMethods.SetThreadAffinityMask(m_threadHandle, (UIntPtr) afinnityArrayValue);
@@ -202,11 +202,10 @@ namespace LoadTester
                 Afinnity = m_previousAfinnity;
                 OnPropertyChanged("Afinnity");
                 AfinnityArray.Changed += OnAfinnityChanged;
-                LastErrorMessage = string.Empty;
             }
             else
             {
-                m_previousAfinnity = (UInt32) result;
+                m_previousAfinnity = (UInt32) afinnityArrayValue;
                 LastErrorMessage = string.Empty;
             }
         }

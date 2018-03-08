@@ -17,8 +17,29 @@ namespace LoadTester
             InitializeComponent();
             btnFill.Text = "Add " + Environment.ProcessorCount + " threads";
 
+            m_processWrapper = new ProcessWrapper(NativeMethods.GetCurrentProcess());
+            m_processWrapper.PropertyChanged += ProcessWrapperOnPropertyChanged;
+
+            cmbProcessPriority.DataSource = ProcessPriorityWrapper.AllValues;
+            cmbProcessPriority.SelectedItem = m_previousProcessPriority = ProcessPriorityWrapper.IDLE_PRIORITY_CLASS;
+
+            m_lastProcessPropsUpdateTime = DateTime.Now;
+            UpdateAfinnity();
+
             NativeMethods.DisableProcessWindowsGhosting();
             ThreadsManager.Init();
+        }
+
+        private void ProcessWrapperOnPropertyChanged(object p_sender, PropertyChangedEventArgs p_propertyChangedEventArgs)
+        {
+            if (p_propertyChangedEventArgs.PropertyName == "Priority")
+            {
+                //labeledComboPriority.Combo.SelectedItem = m_wrapper.Priority;
+            }
+            if (p_propertyChangedEventArgs.PropertyName == "ProcessAfinnity")
+            {
+                UpdateAfinnity();
+            }
         }
 
         private Color[] chartColors = new Color[]{Color.Lime, Color.Red, Color.Yellow, Color.White, Color.BlueViolet, Color.GreenYellow, Color.OrangeRed, Color.Brown, Color.CadetBlue, Color.Aqua, Color.Azure, Color.Blue, Color.Coral, Color.DeepPink, Color.DarkSalmon, Color.Silver};
@@ -82,8 +103,74 @@ namespace LoadTester
             ThreadsManager.StopAll();
         }
 
+
+        private void UpdateAfinnity()
+        {
+            if (m_refreshAfinnityInprogress)
+                return;
+
+            m_refreshAfinnityInprogress = true;
+
+            var cleared = false;
+            this.SuspendLayout();
+            var checkBoxes = flowPanelAfinnity.Controls.OfType<CheckBox>().ToArray();
+
+            var count = m_processWrapper.ProcessAfinnityArray.Count;
+            if (count != checkBoxes.Length)
+            {
+                flowPanelAfinnity.Controls.Clear();
+                cleared = true;
+            }
+            flowPanelAfinnity.SuspendLayout();
+            for (int index = 0; index < count; index++)
+            {
+                var checkBox = cleared ? new CheckBox() : checkBoxes[index];
+
+                var flag = m_processWrapper.ProcessAfinnityArray[index];
+                checkBox.Checked = flag;
+
+                if (cleared)
+                {
+                    checkBox.AutoSize = true;
+                    checkBox.BackColor = Color.Transparent;
+                    checkBox.ForeColor = Color.DarkGoldenrod;
+                    checkBox.Text = "CPU " + index;
+                    checkBox.Tag = index;
+                    checkBox.CheckStateChanged += CheckBoxOnCheckStateChanged;
+                    flowPanelAfinnity.Controls.Add(checkBox);
+                    checkBox.Visible = true;
+                }
+            }
+            flowPanelAfinnity.ResumeLayout(false);
+            this.ResumeLayout();
+
+            m_refreshAfinnityInprogress = false;
+        }
+
+
+        private void CheckBoxOnCheckStateChanged(object p_sender, EventArgs p_eventArgs)
+        {
+            if (m_refreshAfinnityInprogress)
+                return;
+
+            var checkBox = p_sender as CheckBox;
+            var index = (int)checkBox.Tag;
+
+            m_processWrapper.ProcessAfinnityArray[index] = checkBox.Checked;
+        }
+
+
+        private DateTime m_lastProcessPropsUpdateTime;
         private void timer_Tick(object sender, EventArgs e)
         {
+            var now = DateTime.Now;
+            var timeSpan = now - m_lastProcessPropsUpdateTime;
+            if (timeSpan.TotalMilliseconds>= 1000)
+            {
+                m_processWrapper.UpdateBySystem();
+                m_lastProcessPropsUpdateTime = now;
+            }
+
             UpdateChart();
         }
 
@@ -175,6 +262,9 @@ namespace LoadTester
 
         // ReSharper disable once InconsistentNaming
         private int SYSMENU_ABOUT_ID = 0x1;
+        private bool m_refreshAfinnityInprogress;
+        private readonly ProcessWrapper m_processWrapper;
+        private ProcessPriorityWrapper m_previousProcessPriority;
 
         protected override void OnHandleCreated(EventArgs e)
         {
@@ -204,6 +294,29 @@ namespace LoadTester
                     var y = Location.Y + (Height - aboutDlg.Height) / 2;
                     aboutDlg.Location = new Point(Math.Max(x, 0), Math.Max(y, 0));
                 }
+            }
+        }
+
+        private void cmbProcessPriority_SelectionChangeCommitted(object sender, EventArgs e)
+        {
+            var newValue = (ProcessPriorityWrapper)cmbProcessPriority.SelectedItem;
+            var operationResult = m_processWrapper.SetPriority(newValue.Value);
+            if (false == operationResult)
+            {
+                cmbProcessPriority.SelectedItem = m_previousProcessPriority;
+            }
+            else
+            {
+                m_previousProcessPriority = newValue;
+            }
+        }
+
+        private void chkBackgroundMode_CheckedChanged(object sender, EventArgs e)
+        {
+            bool operationResult = m_processWrapper.SetBackgroundMode(chkBackgroundMode.Checked);
+            if (false == operationResult)
+            {
+                chkBackgroundMode.Checked = !chkBackgroundMode.Checked;
             }
         }
     }

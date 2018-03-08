@@ -19,11 +19,23 @@ namespace TestProject1
             for (int i = 0; i < bitArray.Count; i++)
                 bitArray[i] = false;
 
-            var value = bitArray.Value & (
-                (~((UInt64) UInt32.MaxValue))
-                << (8*sizeof (UInt32))
-                );
-            Assert.AreEqual(value, 0);
+            ulong value = bitArray.Value & UInt32.MaxValue;
+            Assert.AreEqual(value, (ulong)0);
+
+            bitArray[0] = true;
+            value = bitArray.Value & UInt32.MaxValue;
+            Assert.AreEqual(value, (ulong)1);
+
+            bitArray[0] = false;
+            value = bitArray.Value & UInt32.MaxValue;
+            Assert.AreEqual(value, (ulong)0);
+
+
+            bitArray[1] = true;
+            value = bitArray.Value & UInt32.MaxValue;
+            Assert.AreEqual(value, (ulong)2);
+
+            bitArray[1] = false;
         }
     }
 }

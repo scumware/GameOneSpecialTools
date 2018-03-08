@@ -195,7 +195,7 @@ namespace LoadTester
                 cleared = true;
             }
             flowPanelAfinnity.SuspendLayout();
-            for (int index = count - 1; index >= 0; index--)
+            for (int index = 0; index < count; index++)
             {
                 var checkBox = cleared ? new CheckBox() : checkBoxes[index];
 
@@ -207,7 +207,7 @@ namespace LoadTester
                     checkBox.AutoSize = true;
                     checkBox.BackColor = Color.Transparent;
                     checkBox.ForeColor = Color.YellowGreen;
-                    checkBox.Text = "CPU " + (count - index - 1);
+                    checkBox.Text = "CPU " + index;
                     checkBox.Tag = index;
                     checkBox.CheckStateChanged += CheckBoxOnCheckStateChanged;
                     flowPanelAfinnity.Controls.Add(checkBox);
@@ -225,12 +225,10 @@ namespace LoadTester
             if (m_refreshAfinnityInprogress)
                 return;
 
-            m_refreshAfinnityInprogress = true;
             var checkBox = p_sender as CheckBox;
             var index = (int) checkBox.Tag;
 
             m_wrapper.AfinnityArray[index] = checkBox.Checked;
-            m_refreshAfinnityInprogress = false;
         }
 
         private void btnStartStop_Click( object sender, EventArgs e )
