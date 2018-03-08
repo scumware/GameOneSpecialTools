@@ -1,25 +1,29 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.ComponentModel;
 using System.Drawing;
-using System.Data;
+using System.Diagnostics;
+using System.Diagnostics.CodeAnalysis;
 using System.Linq;
-using System.Text;
-using System.Threading;
 using System.Windows.Forms;
-using Timer = System.Windows.Forms.Timer;
 
 namespace LoadTester
 {
-    public partial class ThreadControl :UserControl
+    [SuppressMessage("ReSharper", "LocalizableElement")]
+    [SuppressMessage("ReSharper", "ArrangeThisQualifier")]
+    [SuppressMessage("ReSharper", "UseNullPropagation")]
+    public sealed partial class ThreadControl :UserControl
     {
         private ThreadWrapper m_wrapper;
+        private readonly ErrorDisplayingManager m_errorDisplayingManager;
 
         public ThreadControl()
         {
-
             InitializeComponent();
-            BackColor = System.Drawing.Color.FromArgb(32,10,20,0);
+            // this.labeledComboPriority.Combo.Font = new System.Drawing.Font("Courier New", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+
+            m_errorDisplayingManager = new ErrorDisplayingManager(lblError);
+
+           // BackColor = Color.FromArgb(32,10,20,0);
 
             labeledComboPriority.Combo.ValueMember = "Value";
             labeledComboPriority.Combo.DisplayMember = "DisplayName";
@@ -29,16 +33,16 @@ namespace LoadTester
 
             labeledComboLoad.Combo.DataSource = Enum.GetValues( typeof( LoadType ) );
             labeledComboLoad.Combo.SelectedItem = LoadType.EmptyLoop;
-            this.ResetBackColor();
+            //this.ResetBackColor();
         }
 
         /// <summary> 
         /// Clean up any resources being used.
         /// </summary>
-        /// <param name="disposing">true if managed resources should be disposed; otherwise, false.</param>
-        protected override void Dispose( bool disposing )
+        /// <param name="p_disposing">true if managed resources should be disposed; otherwise, false.</param>
+        protected override void Dispose( bool p_disposing )
         {
-            if (disposing)
+            if (p_disposing)
             {
                 if (m_wrapper != null)
                 {
@@ -49,25 +53,25 @@ namespace LoadTester
                     components.Dispose();
                 }
             }
-            base.Dispose( disposing );
+            base.Dispose( p_disposing );
         }
 
-        public void UpdateStateView(ThreadState value)
+        public void UpdateStateView(ThreadState p_value)
         {
-            switch (value)
+            switch (p_value)
             {
                 case ThreadState.Started:
-                    pictureBox1.Image = Properties.Resources.fire32;
+                    picState.Image = Properties.Resources.fire32;
                     btnStartStop.Text = "Stop";
                     break;
 
                 case ThreadState.Suspended:
-                    pictureBox1.Image = Properties.Resources.sleeping;
+                    picState.Image = Properties.Resources.sleeping;
                     btnStartStop.Text = "Resume";
                     break;
 
                 case ThreadState.Stopped:
-                    pictureBox1.Image = Properties.Resources._32px_Sert___dead_smile_svg;
+                    picState.Image = Properties.Resources._32px_Sert___dead_smile_svg;
                     btnStartStop.Text = "Start";
                     break;
             }
@@ -84,6 +88,8 @@ namespace LoadTester
                 RefreshAll();
             }
         }
+
+        public Color SeriesColor { get; set; }
 
         private void ThreadWrapperPropertyChanged(object p_sender, PropertyChangedEventArgs p_propertyChangedEventArgs)
         {
@@ -119,51 +125,10 @@ namespace LoadTester
             }
             if (p_propertyChangedEventArgs.PropertyName == "LastErrorMessage")
             {
-                UpdateErrorState();
+                m_errorDisplayingManager.LastErrorMessage = m_wrapper.LastErrorMessage;
             }
         }
 
-        private DateTime? m_showedErrorTime = null;
-        private void UpdateErrorState()
-        {
-            if (m_showedErrorTime.HasValue)
-            {
-                var errorVisibilityTime = DateTime.Now - m_showedErrorTime.Value;
-                if (errorVisibilityTime.TotalMilliseconds < 500)
-                {
-                    int duration = 500; //in milliseconds
-                    Timer timer = new Timer();
-                    timer.Interval = duration;
-
-                    timer.Tick += (arg1, arg2) =>
-                    {
-                        RefreshDisplayeError();
-                        timer.Stop();
-                            timer.Dispose();
-                    };
-
-                    timer.Start();
-                }
-                else
-                {
-                    RefreshDisplayeError();
-                }
-            }
-            else
-            {
-                RefreshDisplayeError();
-            }
-        }
-
-        private void RefreshDisplayeError()
-        {
-            var lastErrorMessage = m_wrapper.LastErrorMessage;
-            var errorVisible = false == string.IsNullOrEmpty(lastErrorMessage);
-
-            lblError.Text = lastErrorMessage;
-            lblError.Visible = errorVisible;
-            m_showedErrorTime = errorVisible ? (DateTime?) DateTime.Now : null;
-        }
 
         private void RefreshAll()
         {
@@ -173,10 +138,11 @@ namespace LoadTester
 
             labeledComboLoad.Combo.SelectedItem = m_wrapper.LoadType;
             labeledComboPriority.Combo.SelectedItem = m_wrapper.Priority;
-            UpdateErrorState();
+            m_errorDisplayingManager.LastErrorMessage = m_wrapper.LastErrorMessage;
         }
 
-        private bool m_refreshAfinnityInprogress = false;
+        private bool m_refreshAfinnityInprogress;
+
         private void UpdateAfinnity()
         {
             if (m_refreshAfinnityInprogress)
@@ -206,7 +172,7 @@ namespace LoadTester
                 {
                     checkBox.AutoSize = true;
                     checkBox.BackColor = Color.Transparent;
-                    checkBox.ForeColor = Color.YellowGreen;
+                    checkBox.ForeColor = Color.DarkGoldenrod;
                     checkBox.Text = "CPU " + index;
                     checkBox.Tag = index;
                     checkBox.CheckStateChanged += CheckBoxOnCheckStateChanged;
@@ -226,12 +192,15 @@ namespace LoadTester
                 return;
 
             var checkBox = p_sender as CheckBox;
+#if DEBUG
+            Debug.Assert(checkBox != null, "checkBox != null");
+#endif
             var index = (int) checkBox.Tag;
 
             m_wrapper.AfinnityArray[index] = checkBox.Checked;
         }
 
-        private void btnStartStop_Click( object sender, EventArgs e )
+        private void btnStartStop_Click( object p_sender, EventArgs p_eventArgs)
         {
             switch (m_wrapper.State)
             {
@@ -246,19 +215,20 @@ namespace LoadTester
             }
         }
 
-        private void labeledComboPriority_SelectedValueChanged( object sender, EventArgs e )
+        private void labeledComboPriority_SelectedValueChanged( object p_sender, EventArgs p_eventArgs )
         {
             if (null == m_wrapper) return;
+            ProcessWrapper.ShowPriorityWarning(this);
             m_wrapper.Priority = (ThreadPriority) labeledComboPriority.Combo.SelectedValue;
         }
 
-        private void labeledComboLoad_SelectedValueChanged( object sender, EventArgs e )
+        private void labeledComboLoad_SelectedValueChanged( object p_sender, EventArgs p_eventArgs )
         {
             if (null == m_wrapper) return;
             m_wrapper.LoadType = (LoadType)labeledComboLoad.Combo.SelectedItem;
         }
 
-        private void pictureBox1_DoubleClick(object sender, EventArgs e)
+        private void pictureBox1_DoubleClick(object p_sender, EventArgs p_eventArgs)
         {
             var clone = (BitArray)m_wrapper.AfinnityArray.Clone();
             for (int i = 0; i < clone.Count; i++)
@@ -267,6 +237,14 @@ namespace LoadTester
             var number = clone.Count-1;
             clone[number] = true;
             m_wrapper.Afinnity = clone.Value;
+        }
+
+        private void pictureBox1_Click(object sender, EventArgs e)
+        {
+            var histogrammForm = new ThreadSamplingHistogramForm();
+            histogrammForm.SeriesColor = SeriesColor;
+            histogrammForm.ThreadWrapper = m_wrapper;
+            histogrammForm.Show(this);
         }
     }
 }

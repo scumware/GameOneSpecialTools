@@ -117,26 +117,32 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-  <assembly alias="System.Windows.Forms" name="System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" />
-  <data name="fire32" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\fire32.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
-  </data>
-  <data name="Started" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\Started.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
-  </data>
-  <data name="Stopped" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\Stopped.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
-  </data>
-  <data name="_32px_Sert___dead_smile_svg" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\32px-Sert_-_dead_smile.svg.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
-  </data>
-  <data name="DarkGrayWallpepper" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\resources\darkgraywallpepper.jpg;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
-  </data>
-  <data name="sleeping" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\resources\sleeping.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
-  </data>
-  <data name="Information32" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\resources\information.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  <metadata name="timer.TrayLocation" type="System.Drawing.Point, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
+    <value>17, 17</value>
+  </metadata>
+  <assembly alias="System.Drawing" name="System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a" />
+  <data name="$this.Icon" type="System.Drawing.Icon, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
+    <value>
+        AAABAAEAEBAAAAEAIABoBAAAFgAAACgAAAAQAAAAIAAAAAEAIAAAAAAAAAQAABILAAASCwAAAAAAAAAA
+        AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+        AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAsBoAAJuPAA+t1QAyufAAK7buAAWszwAAnIcAAK0OAAAAAAAA
+        AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAHth8AD77oAH36/wDr//8A////AP///wDh//8AdfT/AAm3zQAA
+        pggAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAACracAGP9/wDG//8A6f//AOz//wDn//8A6v//AMj//wBY
+        8P8ACrZzAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAB/S1wCC//8AzP//AN///wDi//8A1f//AN7//wDC
+        //8Aj///ABjNxgAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAm2NgAdP//AMT//wC4//8A4v//AMz//wC6
+        //8Al/z/ACzg/wAu3ewAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAHtW2AHP//wCi//8AmP//AOX//wCr
+        //8AvP//AJT//wAd1f8AIdbrAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABvXpgBr+P8Acfv/AL7//wC3
+        //8Av///AKz//wCF//8AT+3/ABnXagAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAp4uQAKu6FAE3t/gDB
+        //8An///ALv//wBz+f8Aaff/AGf3/wAc3FoAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAGe0LAAAAAAA1
+        +NEAsf//AJr//wCD//8AVO7/AFbw/wBN8PkAGvMcAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+        AAAAR/7eAHz//wBp9P8AkP7/AEjt9gBS8fgANPm9AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+        AAAAAAAAAFb/7ACV/v8AKe3/AK///wA98tAAKv5VADP/ngAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+        AAAAAAAAAAAAAABA/8MAZvb7AE71xACb/P8AKf9vAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+        AAAAAAAAAAAAAAAAAAAAMv9ZADT49wBW+JIAX/nsAAD/BAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+        AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAw/xYALPxKADj75QAn/wcAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+        AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+        AAAAAAAA//8AAPAPAADgBwAA4AcAAOAHAADgBwAA4AcAAOAHAADgBwAA6AcAAPgPAAD4DwAA+D8AAPg/
+        AAD8PwAA//8AAA==
+</value>
   </data>
 </root>

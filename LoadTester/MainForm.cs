@@ -7,27 +7,48 @@ using System.Linq;
 using System.Text;
 using System.Windows.Forms;
 using System.Windows.Forms.DataVisualization.Charting;
+using Win32.Interop;
 
 namespace LoadTester
 {
-    public partial class MainForm :Form
+    public partial class MainForm : Form
     {
         public MainForm()
         {
             InitializeComponent();
+            m_errorDisplayingManager = new ErrorDisplayingManager(lblLastError);
             btnFill.Text = "Add " + Environment.ProcessorCount + " threads";
 
             m_processWrapper = new ProcessWrapper(NativeMethods.GetCurrentProcess());
             m_processWrapper.PropertyChanged += ProcessWrapperOnPropertyChanged;
 
+            try
+            {
+                CurrentProcess.AdjustPrivileges(SecurityEntiryNames.SE_INC_BASE_PRIORITY_NAME, PrivilegeAction.Enable);
+            }
+            catch (Exception exception)
+            {
+                MessageBox.Show(this,
+                    "REALTIME_PRIORITY_CLASS will not be available!"
+                    + Environment.NewLine + Environment.NewLine
+                    + "Probably u r not an administrator or just UAC active. Try right click then and run as administrator."
+                    + Environment.NewLine + Environment.NewLine
+                    + exception.Message,
+                    ":(",
+                    MessageBoxButtons.OK,
+                    MessageBoxIcon.Hand);
+            }
+
             cmbProcessPriority.DataSource = ProcessPriorityWrapper.AllValues;
             cmbProcessPriority.SelectedItem = m_previousProcessPriority = ProcessPriorityWrapper.IDLE_PRIORITY_CLASS;
 
             m_lastProcessPropsUpdateTime = DateTime.Now;
-            UpdateAfinnity();
 
             NativeMethods.DisableProcessWindowsGhosting();
             ThreadsManager.Init();
+            UpdateAfinnity();
+
+            timer.Enabled = true;
         }
 
         private void ProcessWrapperOnPropertyChanged(object p_sender, PropertyChangedEventArgs p_propertyChangedEventArgs)
@@ -40,6 +61,10 @@ namespace LoadTester
             {
                 UpdateAfinnity();
             }
+            if (p_propertyChangedEventArgs.PropertyName == "LastErrorMessage")
+            {
+                m_errorDisplayingManager.LastErrorMessage = m_processWrapper.LastErrorMessage;
+            }
         }
 
         private Color[] chartColors = new Color[]{Color.Lime, Color.Red, Color.Yellow, Color.White, Color.BlueViolet, Color.GreenYellow, Color.OrangeRed, Color.Brown, Color.CadetBlue, Color.Aqua, Color.Azure, Color.Blue, Color.Coral, Color.DeepPink, Color.DarkSalmon, Color.Silver};
@@ -47,7 +72,7 @@ namespace LoadTester
 
         private void button1_Click( object sender, EventArgs e )
         {
-            //m_threadWrappers 
+
             int count;
             if (sender == btnFill)
             {
@@ -68,13 +93,17 @@ namespace LoadTester
                 {
                     ThreadControl threadControl = new ThreadControl();
                     threadControl.Wrapper = threadWrapper;
-
-                    flowLayoutPanel.Controls.Add(threadControl);
-                    AddSeries(threadWrapper);
-
-                    threadControl.Anchor = AnchorStyles.Left;
+                    threadControl.MinimumSize = new Size(flowLayoutPanel.ClientRectangle.Width - 2, 0);
+                    threadControl.Anchor = AnchorStyles.Left | AnchorStyles.Right;
                     threadControl.AutoSizeMode = AutoSizeMode.GrowAndShrink;
-                    threadControl.AutoSize = true;
+                    threadControl.Margin = new Padding(0);
+                    flowLayoutPanel.Controls.Add(threadControl);
+
+                    var seriesColor = AddSeries(threadWrapper);
+                    threadControl.SeriesColor = seriesColor;
+
+                    var preferredSize = threadControl.PreferredSize;
+                    threadControl.Size = new Size(preferredSize.Width - 2, preferredSize.Height);
 
                     threadControl.Visible = true;
                 }
@@ -144,6 +173,7 @@ namespace LoadTester
             flowPanelAfinnity.ResumeLayout(false);
             this.ResumeLayout();
 
+            ThreadsManager.UpdateAfinnity(m_processWrapper.ProcessAfinnity);
             m_refreshAfinnityInprogress = false;
         }
 
@@ -210,7 +240,7 @@ namespace LoadTester
             chart1.ChartAreas[0].RecalculateAxesScale();
         }
 
-        private void AddSeries(ThreadWrapper p_threadWrapper)
+        private Color AddSeries(ThreadWrapper p_threadWrapper)
         {
             this.chart1.Series.SuspendUpdates();
             var colorIndex = this.chart1.Series.Count;
@@ -220,7 +250,7 @@ namespace LoadTester
             }
 
             var originalColor = chartColors[colorIndex];
-            Color seriesColor = Color.FromArgb(196, originalColor.R, originalColor.G, originalColor.B);
+            Color seriesColor = Color.FromArgb(132, originalColor.R, originalColor.G, originalColor.B);
 
             var newSeries = new Series
             {
@@ -248,11 +278,12 @@ namespace LoadTester
                 if (previousTime > time)
                     time = previousTime;
 
-                var dataPoint = newSeries.Points.AddXY(time, value);
+                var dataPointIndex = newSeries.Points.AddXY(time, value);
                 previousTime = time;
             }
 
             chart1.ChartAreas.ResumeUpdates();
+            return seriesColor;
         }
 
         private void chart1_DoubleClick(object sender, EventArgs e)
@@ -261,10 +292,11 @@ namespace LoadTester
         }
 
         // ReSharper disable once InconsistentNaming
-        private int SYSMENU_ABOUT_ID = 0x1;
+        public const int SYSMENU_ABOUT_ID = 0x1;
         private bool m_refreshAfinnityInprogress;
         private readonly ProcessWrapper m_processWrapper;
         private ProcessPriorityWrapper m_previousProcessPriority;
+        private readonly ErrorDisplayingManager m_errorDisplayingManager;
 
         protected override void OnHandleCreated(EventArgs e)
         {
@@ -300,6 +332,28 @@ namespace LoadTester
         private void cmbProcessPriority_SelectionChangeCommitted(object sender, EventArgs e)
         {
             var newValue = (ProcessPriorityWrapper)cmbProcessPriority.SelectedItem;
+/*
+            if (newValue == ProcessPriorityWrapper.REALTIME_PRIORITY_CLASS)
+            {
+                var newTimer = new Timer();
+                {
+                    var backColor = cmbProcessPriority.BackColor;
+                    cmbProcessPriority.BackColor = Color.Red;
+                    newTimer.Enabled = true;
+                    newTimer.Interval = 1000;
+                    newTimer.Tick += (p_sender, p_args) =>
+                    {
+                        var localTimer = newTimer;
+
+                        cmbProcessPriority.BackColor = backColor;
+                        localTimer.Enabled = false;
+                        localTimer.Dispose();
+                    };
+                }
+
+                ProcessWrapper.ShowPriorityWarning(this);
+            }
+*/
             var operationResult = m_processWrapper.SetPriority(newValue.Value);
             if (false == operationResult)
             {

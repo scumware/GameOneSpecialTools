@@ -271,5 +271,42 @@ namespace LoadTester
             }
             return result;
         }
+
+        public static void UpdateAfinnity(uint p_processWrapperProcessAfinnity)
+        {
+#pragma warning disable 420
+            //                       M
+            //                      dM
+            //                      MMr
+            //                     4MMML                  .
+            //                     MMMMM.                xf
+            //     .              "MMMMM               .MM-
+            //      Mh..          +MMMMMM            .MMMM
+            //      .MMM.         .MMMMML.          MMMMMh
+            //       )MMMh.        MMMMMM         MMMMMMM
+            //        3MMMMx.     'MMMMMMf      xnMMMMMM"
+            //        '*MMMMM      MMMMMM.     nMMMMMMP"
+            //          *MMMMMx    "MMMMM\    .MMMMMMM=
+            //           *MMMMMh   "MMMMM"   JMMMMMMP
+            //             MMMMMM   3MMMM.  dMMMMMM            .
+            //              MMMMMM  "MMMM  .MMMMM(        .nnMP"
+            //  =..          *MMMMx  MMM"  dMMMM"    .nnMMMMM*
+            //    "MMn...     'MMMMr 'MM   MMM"   .nMMMMMMM*"
+            //     "4MMMMnn..   *MMM  MM  MMP"  .dMMMMMMM""
+            //       ^MMMMMMMMx.  *ML "M .M*  .MMMMMM**"
+            //          *PMMMMMMhn. *x > M  .MMMM**""
+            //             ""**MMMMhx/.h/ .=*"
+            //                      .3P"%....
+            //                    nP"     "*MMnx
+            while (0 != Interlocked.CompareExchange(ref m_threadCollectionBusy, 1, 0))
+                Thread.SpinWait(100);
+#pragma warning restore 420
+            for (int i = 0; i < m_threadWrappers.Count; i++)
+            {
+                var threadWrapper = m_threadWrappers[i];
+                threadWrapper.UpdateAfinnityByProcess(p_processWrapperProcessAfinnity);
+            }
+            m_threadCollectionBusy = 0;
+        }
     }
 }
