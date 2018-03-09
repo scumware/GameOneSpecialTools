@@ -50,11 +50,6 @@ Network Trash Folder
 Temporary Items
 .apdisk
 .vs/GameOneSpecialTools/v15/sqlite3/storage.ide
-*.suo
-*.suo
-*.ide
-*.bin
-
 
 #Resharper directories and files
 *_ReSharper.*
@@ -66,3 +61,6 @@ GameOneSpecialTools.suo
 *.trx
 *.user
 *.suo
+*.ide
+*.bin
+*ReSharper*
