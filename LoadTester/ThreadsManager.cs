@@ -110,8 +110,8 @@ namespace LoadTester
                 s_times[index] = -1;
 
             uint threadId;
-            var threadHandle = StartThread(UpdateSpeeds, out threadId);
-            NativeMethods.SetThreadPriority((IntPtr) threadHandle, ThreadPriority.THREAD_PRIORITY_TIME_CRITICAL);
+            s_ipdatingThreadHandle = StartThread(UpdateSpeeds, out threadId);
+            NativeMethods.SetThreadPriority((IntPtr) s_ipdatingThreadHandle, ThreadPriority.THREAD_PRIORITY_TIME_CRITICAL);
         }
 
 
@@ -148,6 +148,8 @@ namespace LoadTester
         }
 
         private static Stopwatch m_stopwatch = new Stopwatch();
+        private static uint s_ipdatingThreadHandle;
+
         private static void UpdateSpeeds()
         {
             var intervalIndex = 0;
@@ -220,6 +222,7 @@ namespace LoadTester
 
             }
             NativeMethods.CloseHandle(s_waitableTimer);
+            NativeMethods.CloseHandle((IntPtr) s_ipdatingThreadHandle);
         }
 
         private static void ShiftArrayValues<T>(T[] p_array)

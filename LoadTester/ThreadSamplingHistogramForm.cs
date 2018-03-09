@@ -12,15 +12,15 @@ namespace LoadTester
 {
     public partial class ThreadSamplingHistogramForm : Form
     {
-        public const int ValuesCount = 500;
-
         public ThreadSamplingHistogramForm()
         {
             InitializeComponent();
+            SampleHistogrammDataFactory.ChartSize = ChartSize;
         }
 
         public Color SeriesColor { get; set; }
         public ThreadWrapper ThreadWrapper { get; set; }
+        public const int ChartSize = 500;
 
         protected override void OnLoad(EventArgs e)
         {
@@ -34,14 +34,14 @@ namespace LoadTester
         {
             this.chart1.Series.SuspendUpdates();
 
-            Color seriesColor = SeriesColor;
+            Color seriesColor = Color.FromArgb(255, SeriesColor.R, SeriesColor.G, SeriesColor.B);
 
             var newSeries = new Series
             {
                 BorderColor = Color.White,
                 BorderDashStyle = ChartDashStyle.Solid,
                 ChartArea = chart1.ChartAreas[0].Name,
-                ChartType = SeriesChartType.Area,
+                ChartType = SeriesChartType.StepLine,
                 Color = seriesColor,
                 LabelBackColor = Color.Maroon,
                 LabelForeColor = Color.Lime,
@@ -52,11 +52,11 @@ namespace LoadTester
 
             chart1.ChartAreas.SuspendUpdates();
 
-            for (int index = 0; index < ValuesCount; index++)
+            for (int index = 0; index < ChartSize; index++)
             {
                 var value = 0;
 
-                var dataPointIndex = newSeries.Points.AddXY(value, 1);
+                var dataPointIndex = newSeries.Points.AddXY(0, 1);
             }
 
             chart1.ChartAreas.ResumeUpdates();
@@ -77,13 +77,14 @@ namespace LoadTester
         private void UpdateChart()
         {
             var speeds = (double[])ThreadWrapper.Speeds.Clone();
-            var uniqueValues = GetSortedUniques(speeds);
+            var uniqueValues = SampleHistogrammDataFactory.GetSortedUniques(speeds);
+            lblUniqueValuesValue.Text = uniqueValues.Length.ToString();
 
-            var resultedValues = GetResultedValues(uniqueValues);
+            var resultedValues = SampleHistogrammDataFactory.GetResultedValues(uniqueValues);
 
-            this.chart1.Series.SuspendUpdates();
+            this.chart1.ChartAreas.SuspendUpdates();
             var series = chart1.Series[0];
-            for (int index = 0; index < ValuesCount; index++)
+            for (int index = 0; index < ChartSize; index++)
             {
                 var resultedValue = resultedValues[index];
                 if (resultedValue == null)
@@ -93,90 +94,7 @@ namespace LoadTester
                 seriesPoint.YValues[0] = resultedValue.Count;
                 seriesPoint.XValue = resultedValue.Value;
             }
-            this.chart1.Series.ResumeUpdates();
-        }
-
-        private static UniqueValue[] GetResultedValues(UniqueValue[] p_uniqueValues)
-        {
-            UniqueValue[] resultedValues;
-            if (p_uniqueValues.Length != ValuesCount)
-            {
-                resultedValues = new UniqueValue[ValuesCount];
-                if (p_uniqueValues.Length < ValuesCount)
-                {
-                    var stepSize = ((double)ValuesCount)/(double)p_uniqueValues.Length;
-                    int j = 0;
-                    for (double i = 0; i < resultedValues.Length; i += stepSize)
-                    {
-                        var index = (int)Math.Floor(i);
-                        if (j > p_uniqueValues.Length - 1)
-                            j = p_uniqueValues.Length - 1;
-
-                        var uniqueValue = p_uniqueValues[j];
-                        resultedValues[index] = new UniqueValue();
-                        resultedValues[index].Value = uniqueValue.Value;
-                        resultedValues[index].Count = uniqueValue.Count;
-                        ++j;
-                    }
-                }
-                else if(p_uniqueValues.Length > ValuesCount)
-                {
-                    var stepSize = ((double)ValuesCount) / p_uniqueValues.Length;
-                    double currentStep = 0.0;
-                    for (int index = 0; index < p_uniqueValues.Length; index++)
-                    {
-                        var uniqueValue = p_uniqueValues[index];
-                        currentStep += stepSize;
-                        var j = (int) Math.Floor(currentStep);
-                        if (j > ValuesCount-1)
-                            j = ValuesCount-1;
-
-                        resultedValues[j] = new UniqueValue();
-                        resultedValues[j].Value = uniqueValue.Value;
-                        resultedValues[j].Count = uniqueValue.Count;
-                    }
-                }
-            }
-            else
-            {
-                resultedValues = p_uniqueValues;
-            }
-            return resultedValues;
-        }
-
-        private static UniqueValue[] GetSortedUniques(double[] p_speeds)
-        {
-            Array.Sort(p_speeds);
-
-            var uniqueValues = new List<UniqueValue>();
-
-            double previousSpeed = 0.0;
-            var count = 0;
-
-            for (int index = 0; index < p_speeds.Length; index++)
-            {
-                ++count;
-                var speed = p_speeds[index];
-                if (index == 0)
-                {
-                    previousSpeed = speed;
-                    continue;
-                }
-                // ReSharper disable once CompareOfFloatsByEqualityOperator
-                if (previousSpeed != speed)
-                {
-                    uniqueValues.Add(new UniqueValue() {Count = count, Value = previousSpeed});
-                    count = 0;
-                }
-                previousSpeed = speed;
-            }
-            return uniqueValues.OrderBy(p_value => p_value.Value).ToArray();
-        }
-
-        class UniqueValue
-        {
-            public double Value;
-            public int Count;
+            this.chart1.ChartAreas.ResumeUpdates();
         }
     }
 }

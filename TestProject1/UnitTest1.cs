@@ -2,6 +2,7 @@
 using System.Text;
 using System.Collections.Generic;
 using System.Linq;
+using LoadTester;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace TestProject1
@@ -10,7 +11,7 @@ namespace TestProject1
     public class UnitTest1
     {
         [TestMethod]
-        public void TestMethod1()
+        public void TestBitArray()
         {
             var bitArray = new LoadTester.BitArray();
             bitArray.SetCount(sizeof(UInt32)*8);
@@ -36,6 +37,35 @@ namespace TestProject1
             Assert.AreEqual(value, (ulong)2);
 
             bitArray[1] = false;
+        }
+
+        [TestMethod]
+        public void TestSamplingHistogrammDataFactory()
+        {
+            SampleHistogrammDataFactory.ChartSize = 5;
+            var uniques = SampleHistogrammDataFactory.GetSortedUniques(new double[] {1, 2, 3, 4, 5, 1});
+            Assert.AreEqual(5, uniques.Length);
+
+            int index = 0;
+
+            Assert.AreEqual(1, uniques[index].Value);
+            Assert.AreEqual(2, uniques[index].Count);
+
+            ++index;
+            Assert.AreEqual(2, uniques[index].Value);
+            Assert.AreEqual(1, uniques[index].Count);
+
+            ++index;
+            Assert.AreEqual(3, uniques[index].Value);
+            Assert.AreEqual(1, uniques[index].Count);
+
+            ++index;
+            Assert.AreEqual(4, uniques[index].Value);
+            Assert.AreEqual(1, uniques[index].Count);
+
+            ++index;
+            Assert.AreEqual(5, uniques[index].Value);
+            Assert.AreEqual(1, uniques[index].Count);
         }
     }
 }
