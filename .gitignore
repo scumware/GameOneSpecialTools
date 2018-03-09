@@ -53,8 +53,17 @@ Temporary Items
 
 #Resharper directories and files
 *_ReSharper.*
+<<<<<<< HEAD
+.vs/GameOneSpecialTools/v15/.suo
+.vs/GameOneSpecialTools/v15/sqlite3/storage.ide
+GameOneSpecialTools.sln.DotSettings.user
+GameOneSpecialTools.sln.DotSettings.user
+GameOneSpecialTools.sln.DotSettings.user
+.vs/GameOneSpecialTools/v15/.suo
+=======
 *.user
 *.suo
+<<<<<<< HEAD
 GameOneSpecialTools.5.1.ReSharper.user
 GameOneSpecialTools.suo
 GameOneSpecialTools.suo
@@ -64,3 +73,6 @@ GameOneSpecialTools.suo
 *.ide
 *.bin
 *ReSharper*
+=======
+>>>>>>> origin/master
+>>>>>>> 2ecdb8fa0236678d5f88a0196726fac0a1515888

@@ -21,10 +21,11 @@
     <DebugType>full</DebugType>
     <Optimize>false</Optimize>
     <OutputPath>bin\Debug\</OutputPath>
-    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <DefineConstants>TRACE;DEBUG;Net40</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
     <Prefer32Bit>false</Prefer32Bit>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|x86' ">
     <PlatformTarget>x86</PlatformTarget>
@@ -99,6 +100,7 @@
     </Compile>
     <Compile Include="BigStruct.cs" />
     <Compile Include="BitArray.cs" />
+    <Compile Include="ErrorDisplayingManager.cs" />
     <Compile Include="GeneralConstants.cs" />
     <Compile Include="LoadType.cs" />
     <Compile Include="MainForm.cs">
@@ -113,7 +115,17 @@
     <Compile Include="LabeledCombo.Designer.cs">
       <DependentUpon>LabeledCombo.cs</DependentUpon>
     </Compile>
-    <Compile Include="NativeMethods.cs" />
+    <Compile Include="SampleHistogrammDataFactory.cs" />
+    <Compile Include="ThreadSamplingHistogramForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="ThreadSamplingHistogramForm.Designer.cs">
+      <DependentUpon>ThreadSamplingHistogramForm.cs</DependentUpon>
+    </Compile>
+    <Compile Include="ThreadSamplingHistogramForm.UniqueValue.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Win32\Interop\NativeMethods.cs" />
     <Compile Include="ProcessPriorityWrapper.cs" />
     <Compile Include="ProcessWrapper.cs" />
     <Compile Include="Program.cs" />
@@ -130,6 +142,12 @@
     <Compile Include="ThreadsManager.cs" />
     <Compile Include="ThreadState.cs" />
     <Compile Include="ThreadWrapper.cs" />
+    <Compile Include="Win32\Interop\Constants.cs" />
+    <Compile Include="Win32\Interop\Constants\SecurityEntiryNames.cs" />
+    <Compile Include="Win32\Interop\Constants\Win32Result.cs" />
+    <Compile Include="Win32\Interop\CurrentProcess.cs" />
+    <Compile Include="Win32\Interop\Structures.cs" />
+    <Compile Include="Win32\Interop\SecurityImportedFunctions.cs" />
     <EmbeddedResource Include="AboutForm.resx">
       <DependentUpon>AboutForm.cs</DependentUpon>
     </EmbeddedResource>
@@ -151,6 +169,9 @@
     </Compile>
     <EmbeddedResource Include="ThreadControl.resx">
       <DependentUpon>ThreadControl.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="ThreadSamplingHistogramForm.resx">
+      <DependentUpon>ThreadSamplingHistogramForm.cs</DependentUpon>
     </EmbeddedResource>
     <None Include="app.config" />
     <None Include="Properties\Settings.settings">
@@ -180,6 +201,9 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="Resources\sleeping.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\Information.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

@@ -96,6 +96,7 @@ namespace LoadTester
 #if !Net40
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
 #endif
+
         private void RestartLoop()
         {
             if (false == m_stopped)
@@ -153,12 +154,12 @@ namespace LoadTester
             byte[] codeBytes2 = new byte[]
             {
 
-                0x90                //nop
+                0x90 //nop
                 //0xcc                //int 3
-                , 0xF3, 0x90        //f390   pause
-                , 0x80, 0x3a, 0x00  //803a00 cmp     byte ptr [rdx],0
-                , 0x75, 0xF9,       //75F9   jne ->pause command
-                0xc3                //c3     ret
+                , 0xF3, 0x90 //f390   pause
+                , 0x80, 0x3a, 0x00 //803a00 cmp     byte ptr [rdx],0
+                , 0x75, 0xF9, //75F9   jne ->pause command
+                0xc3 //c3     ret
             };
             // @formatter:on
 
@@ -238,12 +239,13 @@ namespace LoadTester
             uint lpThreadId;
             m_threadHandle = (IntPtr) StartThread(ThreadFunc, out lpThreadId, 0, p_createSuspended);
             ThreadId = lpThreadId;
-            m_previousAfinnity = (UInt32)NativeMethods.SetThreadAffinityMask(m_threadHandle, (UIntPtr) UInt32.MaxValue);
+            m_previousAfinnity = (UInt32) NativeMethods.SetThreadAffinityMask(m_threadHandle, (UIntPtr) UInt32.MaxValue);
             Afinnity = m_previousAfinnity;
         }
 
 
-        unsafe uint StartThread(ThreadStart p_threadFunc, out uint p_lpThreadId, int StackSize = 0, bool p_createSuspended = false)
+        unsafe uint StartThread(ThreadStart p_threadFunc, out uint p_lpThreadId, int StackSize = 0,
+            bool p_createSuspended = false)
         {
             m_threadFunctionDelegeteReference = p_threadFunc;
 
@@ -255,7 +257,8 @@ namespace LoadTester
             {
                 dwCreationFlags |= NativeMethods.ThreadCreationFlags.CREATE_SUSPENDED;
             }
-            uint dwHandle = NativeMethods.CreateThread(null, (uint) StackSize, p_threadFunc, lpParam, dwCreationFlags, out p_lpThreadId);
+            uint dwHandle = NativeMethods.CreateThread(null, (uint) StackSize, p_threadFunc, lpParam, dwCreationFlags,
+                out p_lpThreadId);
             var lastWin32Error = Marshal.GetLastWin32Error();
             if (dwHandle == 0)
             {
@@ -375,7 +378,7 @@ namespace LoadTester
                         {
                             fixed (void* v = &m_looper)
                             {
-                                s_pause(0, (byte*)v);
+                                s_pause(0, (byte*) v);
                             }
                         }
 
@@ -448,6 +451,24 @@ namespace LoadTester
             GC.SuppressFinalize(this);
             m_disposed = true;
             Stop();
+        }
+
+        public void UpdateAfinnityByProcess(uint p_processAfinnity)
+        {
+            var newAfinnity =  Afinnity;
+            if (newAfinnity == p_processAfinnity)
+                return;
+
+            var previousAfinnity = newAfinnity;
+
+            newAfinnity &= p_processAfinnity;
+            if (newAfinnity == 0)
+                newAfinnity = p_processAfinnity;
+
+            if (newAfinnity == previousAfinnity)
+                return;
+
+            Afinnity = newAfinnity;
         }
     }
 }

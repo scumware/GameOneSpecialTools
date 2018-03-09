@@ -4,6 +4,8 @@ using System.ComponentModel;
 using System.Linq;
 using System.Runtime.InteropServices;
 using System.Text;
+using System.Threading;
+using System.Windows.Forms;
 using LoadTester.Annotations;
 
 namespace LoadTester
@@ -49,6 +51,8 @@ namespace LoadTester
             UIntPtr lpProcessAffinityMask;
             UIntPtr lpSystemAffinityMask;
             NativeMethods.GetProcessAffinityMask(m_processHandle, out lpProcessAffinityMask, out lpSystemAffinityMask);
+            if (lpProcessAffinityMask == (UIntPtr) ProcessAfinnity)
+                return;
 
             // ReSharper disable once DelegateSubtraction
             ProcessAfinnityArray.Changed -= OnAfinnityChanged;
@@ -86,7 +90,7 @@ namespace LoadTester
             else
             {
                 m_previousAfinnity = (UInt32)afinnityArrayValue;
-                LastErrorMessage = string.Empty;
+                LastErrorMessage = String.Empty;
             }
         }
 
@@ -99,8 +103,11 @@ namespace LoadTester
 
         public bool SetPriority(NativeMethods.PriorityClass p_newPriorityClass)
         {
+            Thread.BeginCriticalRegion();
             NativeMethods.SetPriorityClass(m_processHandle, p_newPriorityClass);
             var lastError = Marshal.GetLastWin32Error();
+            Thread.EndCriticalRegion();
+
             if (lastError != 0)
             {
                 LastErrorMessage = new Win32Exception(lastError).Message;
@@ -109,13 +116,14 @@ namespace LoadTester
             else
             {
                 PriorityClass = p_newPriorityClass;
-                LastErrorMessage = string.Empty;
+                LastErrorMessage = String.Empty;
                 return true;
             }
         }
 
         private NativeMethods.PriorityClass m_priorityClass;
         private bool m_backgroundMode;
+        private static bool m_warningAllreadyShowed;
 
         public NativeMethods.PriorityClass PriorityClass
         {
@@ -153,9 +161,20 @@ namespace LoadTester
             else
             {
                 m_backgroundMode = p_mode;
-                LastErrorMessage = string.Empty;
+                LastErrorMessage = String.Empty;
                 return true;
             }
+        }
+
+        public static void ShowPriorityWarning(IWin32Window p_owner)
+        {
+            if (m_warningAllreadyShowed)
+                return;
+
+            MessageBox.Show(p_owner, "Man I beleave u r not an idiot!", "FYI", MessageBoxButtons.OK,
+                MessageBoxIcon.Information);
+
+            m_warningAllreadyShowed = true;
         }
     }
 }

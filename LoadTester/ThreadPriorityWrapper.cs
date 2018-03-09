@@ -20,7 +20,7 @@ namespace LoadTester
 
         public override string ToString()
         {
-            var result = GetString() + "\t\t "+((int)Value).ToString("X4");
+            var result = GetString()/* + "\t\t "+((int)Value).ToString("X4")*/;
             return result;
         }
 
@@ -29,19 +29,19 @@ namespace LoadTester
             switch (Value)
             {
                 case ThreadPriority.THREAD_PRIORITY_IDLE:
-                    return "IDLE";
+                    return "Idle";
                 case ThreadPriority.THREAD_PRIORITY_LOWEST:
-                    return "LOWEST";
+                    return "Lowest";
                 case ThreadPriority.THREAD_PRIORITY_BELOW_NORMAL:
-                    return "BELOW_NORMAL";
+                    return "Below normal";
                 case ThreadPriority.THREAD_PRIORITY_NORMAL:
-                    return "NORMAL";
+                    return "Normal";
                 case ThreadPriority.THREAD_PRIORITY_ABOVE_NORMAL:
-                    return "ABOVE_NORMAL";
+                    return "Above normal";
                 case ThreadPriority.THREAD_PRIORITY_HIGHEST:
-                    return "HIGHEST";
+                    return "Highest";
                 case ThreadPriority.THREAD_PRIORITY_TIME_CRITICAL:
-                    return "TIME_CRITICAL";
+                    return "TIME_CRITICAL     (I hope u r know that u r doing.";
                 default:
                     throw new ArgumentOutOfRangeException();
             }

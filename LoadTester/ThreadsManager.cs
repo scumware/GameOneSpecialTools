@@ -110,8 +110,8 @@ namespace LoadTester
                 s_times[index] = -1;
 
             uint threadId;
-            var threadHandle = StartThread(UpdateSpeeds, out threadId);
-            NativeMethods.SetThreadPriority((IntPtr) threadHandle, ThreadPriority.THREAD_PRIORITY_TIME_CRITICAL);
+            s_ipdatingThreadHandle = StartThread(UpdateSpeeds, out threadId);
+            NativeMethods.SetThreadPriority((IntPtr) s_ipdatingThreadHandle, ThreadPriority.THREAD_PRIORITY_TIME_CRITICAL);
         }
 
 
@@ -148,6 +148,8 @@ namespace LoadTester
         }
 
         private static Stopwatch m_stopwatch = new Stopwatch();
+        private static uint s_ipdatingThreadHandle;
+
         private static void UpdateSpeeds()
         {
             var intervalIndex = 0;
@@ -220,6 +222,7 @@ namespace LoadTester
 
             }
             NativeMethods.CloseHandle(s_waitableTimer);
+            NativeMethods.CloseHandle((IntPtr) s_ipdatingThreadHandle);
         }
 
         private static void ShiftArrayValues<T>(T[] p_array)
@@ -270,6 +273,43 @@ namespace LoadTester
                 m_threadCollectionBusy = 0;
             }
             return result;
+        }
+
+        public static void UpdateAfinnity(uint p_processWrapperProcessAfinnity)
+        {
+#pragma warning disable 420
+            //                       M
+            //                      dM
+            //                      MMr
+            //                     4MMML                  .
+            //                     MMMMM.                xf
+            //     .              "MMMMM               .MM-
+            //      Mh..          +MMMMMM            .MMMM
+            //      .MMM.         .MMMMML.          MMMMMh
+            //       )MMMh.        MMMMMM         MMMMMMM
+            //        3MMMMx.     'MMMMMMf      xnMMMMMM"
+            //        '*MMMMM      MMMMMM.     nMMMMMMP"
+            //          *MMMMMx    "MMMMM\    .MMMMMMM=
+            //           *MMMMMh   "MMMMM"   JMMMMMMP
+            //             MMMMMM   3MMMM.  dMMMMMM            .
+            //              MMMMMM  "MMMM  .MMMMM(        .nnMP"
+            //  =..          *MMMMx  MMM"  dMMMM"    .nnMMMMM*
+            //    "MMn...     'MMMMr 'MM   MMM"   .nMMMMMMM*"
+            //     "4MMMMnn..   *MMM  MM  MMP"  .dMMMMMMM""
+            //       ^MMMMMMMMx.  *ML "M .M*  .MMMMMM**"
+            //          *PMMMMMMhn. *x > M  .MMMM**""
+            //             ""**MMMMhx/.h/ .=*"
+            //                      .3P"%....
+            //                    nP"     "*MMnx
+            while (0 != Interlocked.CompareExchange(ref m_threadCollectionBusy, 1, 0))
+                Thread.SpinWait(100);
+#pragma warning restore 420
+            for (int i = 0; i < m_threadWrappers.Count; i++)
+            {
+                var threadWrapper = m_threadWrappers[i];
+                threadWrapper.UpdateAfinnityByProcess(p_processWrapperProcessAfinnity);
+            }
+            m_threadCollectionBusy = 0;
         }
     }
 }
