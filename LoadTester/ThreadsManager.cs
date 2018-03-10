@@ -10,7 +10,7 @@ namespace LoadTester
 {
     public static class ThreadsManager
     {
-        public const int LastMeasurementsCount = (int) (3 * 1000);
+        public const int LastMeasurementsCount = (int) (5*1000);
         private const int Period = 10;
         private static IList<ThreadWrapper> m_threadWrappers;
 

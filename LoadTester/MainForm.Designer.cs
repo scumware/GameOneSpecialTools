@@ -206,11 +206,12 @@
             this.flowLayoutPanel1.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
             this.flowLayoutPanel1.Controls.Add(this.cmbProcessPriority);
             this.flowLayoutPanel1.Controls.Add(this.chkBackgroundMode);
-            this.flowLayoutPanel1.Location = new System.Drawing.Point(119, 34);
+            this.flowLayoutPanel1.Location = new System.Drawing.Point(119, 37);
             this.flowLayoutPanel1.Margin = new System.Windows.Forms.Padding(0);
             this.flowLayoutPanel1.Name = "flowLayoutPanel1";
-            this.flowLayoutPanel1.Size = new System.Drawing.Size(246, 34);
+            this.flowLayoutPanel1.Size = new System.Drawing.Size(365, 27);
             this.flowLayoutPanel1.TabIndex = 5;
+            this.flowLayoutPanel1.WrapContents = false;
             // 
             // cmbProcessPriority
             // 
@@ -232,7 +233,7 @@
             this.chkBackgroundMode.Anchor = System.Windows.Forms.AnchorStyles.Left;
             this.chkBackgroundMode.AutoSize = true;
             this.chkBackgroundMode.ForeColor = System.Drawing.Color.DarkGoldenrod;
-            this.chkBackgroundMode.Location = new System.Drawing.Point(3, 30);
+            this.chkBackgroundMode.Location = new System.Drawing.Point(249, 5);
             this.chkBackgroundMode.Name = "chkBackgroundMode";
             this.chkBackgroundMode.Size = new System.Drawing.Size(113, 17);
             this.chkBackgroundMode.TabIndex = 8;

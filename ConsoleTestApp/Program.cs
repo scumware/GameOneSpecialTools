@@ -12,7 +12,7 @@ namespace ConsoleTestApp
         static void Main(string[] args)
         {
             var unitTest = new UnitTest1();
-            unitTest.TestSamplingHistogrammDataFactory();
+            unitTest.TestSamplingHistogrammDataFactory2();
             Console.ReadLine();
         }
     }

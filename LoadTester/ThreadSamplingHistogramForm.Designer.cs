@@ -42,21 +42,25 @@
             // 
             this.chart1.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(92)))), ((int)(((byte)(40)))), ((int)(((byte)(40)))), ((int)(((byte)(40)))));
             this.chart1.BorderlineColor = System.Drawing.Color.Red;
-            chartArea1.AxisX.IsStartedFromZero = false;
             chartArea1.AxisX.LabelStyle.ForeColor = System.Drawing.Color.YellowGreen;
             chartArea1.AxisX.LineColor = System.Drawing.Color.Green;
+            chartArea1.AxisX.LogarithmBase = 2D;
             chartArea1.AxisX.MajorGrid.LineColor = System.Drawing.Color.Green;
             chartArea1.AxisX.MajorGrid.LineDashStyle = System.Windows.Forms.DataVisualization.Charting.ChartDashStyle.Dot;
             chartArea1.AxisX.MajorTickMark.LineColor = System.Drawing.Color.DarkGreen;
+            chartArea1.AxisX.Minimum = 0D;
             chartArea1.AxisX.MinorGrid.LineColor = System.Drawing.Color.Bisque;
             chartArea1.AxisX.MinorTickMark.LineColor = System.Drawing.Color.DimGray;
             chartArea1.AxisX.ScaleBreakStyle.LineColor = System.Drawing.Color.DarkOliveGreen;
             chartArea1.AxisX.Title = "Speed (iterations / timeslice)";
             chartArea1.AxisX.TitleForeColor = System.Drawing.Color.Gold;
+            chartArea1.AxisX2.Minimum = -500D;
+            chartArea1.AxisX2.ScaleBreakStyle.LineColor = System.Drawing.Color.Maroon;
             chartArea1.AxisX2.TitleForeColor = System.Drawing.Color.ForestGreen;
             chartArea1.AxisY.LabelStyle.ForeColor = System.Drawing.Color.YellowGreen;
             chartArea1.AxisY.LineColor = System.Drawing.Color.Green;
             chartArea1.AxisY.MajorGrid.LineColor = System.Drawing.Color.Green;
+            chartArea1.AxisY.Minimum = 0D;
             chartArea1.AxisY.ScaleBreakStyle.LineColor = System.Drawing.Color.DarkGreen;
             chartArea1.AxisY.Title = "Count";
             chartArea1.AxisY.TitleForeColor = System.Drawing.Color.Gold;
@@ -112,7 +116,7 @@
             this.MaximizeBox = false;
             this.MinimizeBox = false;
             this.Name = "ThreadSamplingHistogramForm";
-            this.Opacity = 0.7D;
+            this.Opacity = 0.85D;
             this.ShowInTaskbar = false;
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
             this.Text = "ThreadSamplingHistogramForm";

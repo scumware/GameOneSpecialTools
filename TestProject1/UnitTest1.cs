@@ -40,7 +40,7 @@ namespace TestProject1
         }
 
         [TestMethod]
-        public void TestSamplingHistogrammDataFactory()
+        public void TestSamplingHistogrammDataFactory1()
         {
             SampleHistogrammDataFactory.ChartSize = 5;
             var uniques = SampleHistogrammDataFactory.GetSortedUniques(new double[] {1, 2, 3, 4, 5, 1});
@@ -66,6 +66,39 @@ namespace TestProject1
             ++index;
             Assert.AreEqual(5, uniques[index].Value);
             Assert.AreEqual(1, uniques[index].Count);
+        }
+
+        [TestMethod]
+        public void TestSamplingHistogrammDataFactory2()
+        {
+            SampleHistogrammDataFactory.ChartSize = 5;
+            var uniques = SampleHistogrammDataFactory.GetSortedUniques(new double[] { 1, 2, 3, 4, 5, 1 });
+            var resultedValues = SampleHistogrammDataFactory.GetResultedValues(uniques);
+            Assert.IsTrue(Enumerable.SequenceEqual(uniques, resultedValues));
+        }
+
+
+        [TestMethod]
+        public void TestSamplingHistogrammDataFactory3()
+        {
+            SampleHistogrammDataFactory.ChartSize = 3;
+            var uniques = SampleHistogrammDataFactory.GetSortedUniques(new double[] { 1, 2, 3, 4, 5, 1 });
+            var resultedValues = SampleHistogrammDataFactory.GetResultedValues(uniques);
+
+            Assert.AreEqual(3, resultedValues.Length);
+
+            int index = 0;
+
+            Assert.AreEqual(1, resultedValues[index].Value);
+            Assert.AreEqual(2, resultedValues[index].Count);
+
+            ++index;
+            Assert.AreEqual(2, resultedValues[index].Value);
+            Assert.AreEqual(1, resultedValues[index].Count);
+
+            ++index;
+            Assert.AreEqual(3, resultedValues[index].Value);
+            Assert.AreEqual(1, resultedValues[index].Count);
         }
     }
 }

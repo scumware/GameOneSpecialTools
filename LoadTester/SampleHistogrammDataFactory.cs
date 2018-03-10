@@ -41,17 +41,48 @@ namespace LoadTester
                 {
                     var stepSize = ((double) ChartSize)/p_uniqueValues.Length;
                     double currentStep = 0.0;
+                    int prevIndex = 0;
+                    List<double> values = null;
                     for (int index = 0; index < p_uniqueValues.Length; index++)
                     {
                         var uniqueValue = p_uniqueValues[index];
-                        currentStep += stepSize;
                         var j = (int) Math.Floor(currentStep);
                         if (j > ChartSize - 1)
                             j = ChartSize - 1;
 
-                        resultedValues[j] = new UniqueValue();
-                        resultedValues[j].Value = uniqueValue.Value;
-                        resultedValues[j].Count = uniqueValue.Count;
+                        UniqueValue resultedValue;
+                        if (prevIndex != j)
+                        {
+                            resultedValue = new UniqueValue();
+                            resultedValue.Value = uniqueValue.Value;
+                            resultedValue.Count = uniqueValue.Count;
+                            values = new List<double>();
+                            values.Add(uniqueValue.Value);
+                        }
+                        else
+                        {
+                            resultedValue = new UniqueValue();
+                            resultedValue.Count += uniqueValue.Count;
+
+                            if (values != null)
+                            {
+                                resultedValue.Count += values.Count;
+                                values.Add(uniqueValue.Value);
+                                resultedValue.Value = Enumerable.Average(values);
+                            }
+                            else
+                            {
+                                resultedValue.Value = uniqueValue.Value;
+                                values = new List<double>();
+                                values.Add(uniqueValue.Value);
+                            }
+                        }
+
+                        resultedValues[j] = resultedValue;
+
+
+                        prevIndex = j;
+                        currentStep += stepSize;
                     }
                 }
             }
@@ -75,7 +106,7 @@ namespace LoadTester
         public static UniqueValue[] GetSortedUniques(double[] p_values)
         {
             if (p_values == null)
-                throw new ArgumentNullException(nameof(p_values));
+                throw new ArgumentNullException("p_values");
 
             if (p_values.Length == 0)
                 return new UniqueValue[0];
@@ -110,10 +141,8 @@ namespace LoadTester
 
                 previousValue = value;
             }
-            if (count != 0)
-            {
-                uniqueValues.Add(new UniqueValue() {Count = count + 1, Value = previousValue});
-            }
+            uniqueValues.Add(new UniqueValue() {Count = count + 1, Value = previousValue});
+
             return uniqueValues.OrderBy(p_value => p_value.Value).ToArray();
         }
     }
