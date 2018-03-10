@@ -10,7 +10,7 @@
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>LoadTester</RootNamespace>
     <AssemblyName>LoadTester</AssemblyName>
-    <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v4.5.1</TargetFrameworkVersion>
     <TargetFrameworkProfile>
     </TargetFrameworkProfile>
     <FileAlignment>512</FileAlignment>
@@ -121,9 +121,6 @@
     </Compile>
     <Compile Include="ThreadSamplingHistogramForm.Designer.cs">
       <DependentUpon>ThreadSamplingHistogramForm.cs</DependentUpon>
-    </Compile>
-    <Compile Include="ThreadSamplingHistogramForm.UniqueValue.cs">
-      <SubType>Form</SubType>
     </Compile>
     <Compile Include="Win32\Interop\NativeMethods.cs" />
     <Compile Include="ProcessPriorityWrapper.cs" />

@@ -42,8 +42,8 @@ namespace TestProject1
         [TestMethod]
         public void TestSamplingHistogrammDataFactory1()
         {
-            SampleHistogrammDataFactory.ChartSize = 5;
-            var uniques = SampleHistogrammDataFactory.GetSortedUniques(new double[] {1, 2, 3, 4, 5, 1});
+            var dataFactory = new SampleHistogrammDataFactory(5);
+            var uniques = dataFactory.GetSortedUniques(new double[] {1, 2, 3, 4, 5, 1});
             Assert.AreEqual(5, uniques.Length);
 
             int index = 0;
@@ -71,9 +71,9 @@ namespace TestProject1
         [TestMethod]
         public void TestSamplingHistogrammDataFactory2()
         {
-            SampleHistogrammDataFactory.ChartSize = 5;
-            var uniques = SampleHistogrammDataFactory.GetSortedUniques(new double[] { 1, 2, 3, 4, 5, 1 });
-            var resultedValues = SampleHistogrammDataFactory.GetResultedValues(uniques);
+            var dataFactory = new SampleHistogrammDataFactory(5);
+            var uniques = dataFactory.GetSortedUniques(new double[] { 1, 2, 3, 4, 5, 1 });
+            var resultedValues = dataFactory.GetResultedValues(uniques);
             Assert.IsTrue(Enumerable.SequenceEqual(uniques, resultedValues));
         }
 
@@ -81,9 +81,9 @@ namespace TestProject1
         [TestMethod]
         public void TestSamplingHistogrammDataFactory3()
         {
-            SampleHistogrammDataFactory.ChartSize = 3;
-            var uniques = SampleHistogrammDataFactory.GetSortedUniques(new double[] { 1, 2, 3, 4, 5, 1 });
-            var resultedValues = SampleHistogrammDataFactory.GetResultedValues(uniques);
+            var dataFactory = new SampleHistogrammDataFactory(3);
+            var uniques = dataFactory.GetSortedUniques(new double[] { 1, 2, 3, 4, 5, 1 });
+            var resultedValues = dataFactory.GetResultedValues(uniques);
 
             Assert.AreEqual(3, resultedValues.Length);
 

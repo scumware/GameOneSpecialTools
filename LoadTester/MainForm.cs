@@ -22,6 +22,22 @@ namespace LoadTester
             m_processWrapper = new ProcessWrapper(NativeMethods.GetCurrentProcess());
             m_processWrapper.PropertyChanged += ProcessWrapperOnPropertyChanged;
 
+            cmbProcessPriority.DataSource = ProcessPriorityWrapper.AllValues;
+            cmbProcessPriority.SelectedItem = m_previousProcessPriority = ProcessPriorityWrapper.IDLE_PRIORITY_CLASS;
+
+            m_lastProcessPropsUpdateTime = DateTime.Now;
+
+            NativeMethods.DisableProcessWindowsGhosting();
+            ThreadsManager.Init();
+            UpdateAfinnity();
+
+            timer.Enabled = true;
+        }
+
+        protected override void OnShown(EventArgs e)
+        {
+            NativeMethods.SetThreadPriority(NativeMethods.GetCurrentThread(), ThreadPriority.THREAD_PRIORITY_HIGHEST);
+
             try
             {
                 CurrentProcess.AdjustPrivileges(SecurityEntiryNames.SE_INC_BASE_PRIORITY_NAME, PrivilegeAction.Enable);
@@ -39,16 +55,7 @@ namespace LoadTester
                     MessageBoxIcon.Hand);
             }
 
-            cmbProcessPriority.DataSource = ProcessPriorityWrapper.AllValues;
-            cmbProcessPriority.SelectedItem = m_previousProcessPriority = ProcessPriorityWrapper.IDLE_PRIORITY_CLASS;
-
-            m_lastProcessPropsUpdateTime = DateTime.Now;
-
-            NativeMethods.DisableProcessWindowsGhosting();
-            ThreadsManager.Init();
-            UpdateAfinnity();
-
-            timer.Enabled = true;
+            base.OnShown(e);
         }
 
         private void ProcessWrapperOnPropertyChanged(object p_sender, PropertyChangedEventArgs p_propertyChangedEventArgs)

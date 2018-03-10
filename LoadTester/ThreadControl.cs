@@ -218,7 +218,9 @@ namespace LoadTester
         private void labeledComboPriority_SelectedValueChanged( object p_sender, EventArgs p_eventArgs )
         {
             if (null == m_wrapper) return;
-            ProcessWrapper.ShowPriorityWarning(this);
+            if(ThreadPriority.THREAD_PRIORITY_TIME_CRITICAL == (ThreadPriority) labeledComboPriority.Combo.SelectedValue)
+                ProcessWrapper.ShowPriorityWarning(this);
+
             m_wrapper.Priority = (ThreadPriority) labeledComboPriority.Combo.SelectedValue;
         }
 

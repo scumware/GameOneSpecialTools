@@ -85,6 +85,7 @@
             // 
             this.lblUniqueValues.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
             this.lblUniqueValues.AutoSize = true;
+            this.lblUniqueValues.BackColor = System.Drawing.Color.Transparent;
             this.lblUniqueValues.ForeColor = System.Drawing.Color.DarkGoldenrod;
             this.lblUniqueValues.Location = new System.Drawing.Point(12, 315);
             this.lblUniqueValues.Name = "lblUniqueValues";
@@ -96,6 +97,7 @@
             // 
             this.lblUniqueValuesValue.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
             this.lblUniqueValuesValue.AutoSize = true;
+            this.lblUniqueValuesValue.BackColor = System.Drawing.Color.Transparent;
             this.lblUniqueValuesValue.ForeColor = System.Drawing.Color.Gold;
             this.lblUniqueValuesValue.Location = new System.Drawing.Point(96, 315);
             this.lblUniqueValuesValue.Name = "lblUniqueValuesValue";
@@ -119,7 +121,7 @@
             this.Opacity = 0.85D;
             this.ShowInTaskbar = false;
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
-            this.Text = "ThreadSamplingHistogramForm";
+            this.Text = "Thread speeds sampling histogram";
             this.TopMost = true;
             ((System.ComponentModel.ISupportInitialize)(this.chart1)).EndInit();
             this.ResumeLayout(false);
