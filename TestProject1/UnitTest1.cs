@@ -67,38 +67,5 @@ namespace TestProject1
             Assert.AreEqual(5, uniques[index].Value);
             Assert.AreEqual(1, uniques[index].Count);
         }
-
-        [TestMethod]
-        public void TestSamplingHistogrammDataFactory2()
-        {
-            var dataFactory = new SampleHistogrammDataFactory(5);
-            var uniques = dataFactory.GetSortedUniques(new double[] { 1, 2, 3, 4, 5, 1 });
-            var resultedValues = dataFactory.GetResultedValues(uniques);
-            Assert.IsTrue(Enumerable.SequenceEqual(uniques, resultedValues));
-        }
-
-
-        [TestMethod]
-        public void TestSamplingHistogrammDataFactory3()
-        {
-            var dataFactory = new SampleHistogrammDataFactory(3);
-            var uniques = dataFactory.GetSortedUniques(new double[] { 1, 2, 3, 4, 5, 1 });
-            var resultedValues = dataFactory.GetResultedValues(uniques);
-
-            Assert.AreEqual(3, resultedValues.Length);
-
-            int index = 0;
-
-            Assert.AreEqual(1, resultedValues[index].Value);
-            Assert.AreEqual(2, resultedValues[index].Count);
-
-            ++index;
-            Assert.AreEqual(2, resultedValues[index].Value);
-            Assert.AreEqual(1, resultedValues[index].Count);
-
-            ++index;
-            Assert.AreEqual(3, resultedValues[index].Value);
-            Assert.AreEqual(1, resultedValues[index].Count);
-        }
     }
 }

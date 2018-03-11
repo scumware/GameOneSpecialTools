@@ -13,87 +13,6 @@ namespace LoadTester
             ChartSize = p_chartSize;
         }
 
-        public UniqueValue[] GetResultedValues(UniqueValue[] p_uniqueValues)
-        {
-            UniqueValue[] resultedValues;
-            if (p_uniqueValues.Length == ChartSize)
-            {
-                resultedValues = p_uniqueValues;
-            }
-            else
-            {
-                resultedValues = new UniqueValue[ChartSize];
-                if (ChartSize > p_uniqueValues.Length)
-                {
-                    double stepSize = ((double) ChartSize)/(double) p_uniqueValues.Length;
-                    
-                    int targetIndex = 0;
-                    double currentStep = 0.0;
-                    int previousStep = 0;
-
-                    for (int i = 0; i < p_uniqueValues.Length; i++)
-                    {
-                        var uniqueValue = p_uniqueValues[i];
-
-                        targetIndex = (int) Math.Floor(currentStep);
-                        SimpleFillValues(resultedValues, uniqueValue, previousStep, targetIndex);
-
-                        previousStep = targetIndex;
-                        currentStep += stepSize;
-                    }
-                }
-                else if (p_uniqueValues.Length > ChartSize)
-                {
-                    var stepSize = ((double) ChartSize)/p_uniqueValues.Length;
-                    double currentStep = 0.0;
-                    int prevIndex = 0;
-                    List<double> values = null;
-                    for (int index = 0; index < p_uniqueValues.Length; index++)
-                    {
-                        var uniqueValue = p_uniqueValues[index];
-                        var j = (int) Math.Floor(currentStep);
-                        if (j > ChartSize - 1)
-                            j = ChartSize - 1;
-
-                        UniqueValue resultedValue;
-                        if (prevIndex != j)
-                        {
-                            resultedValue = new UniqueValue();
-                            resultedValue.Value = uniqueValue.Value;
-                            resultedValue.Count = uniqueValue.Count;
-                            values = new List<double>();
-                            values.Add(uniqueValue.Value);
-                        }
-                        else
-                        {
-                            resultedValue = new UniqueValue();
-                            resultedValue.Count += uniqueValue.Count;
-
-                            if (values != null)
-                            {
-                                resultedValue.Count += values.Count;
-                                values.Add(uniqueValue.Value);
-                                resultedValue.Value = Enumerable.Average(values);
-                            }
-                            else
-                            {
-                                resultedValue.Value = uniqueValue.Value;
-                                values = new List<double>();
-                                values.Add(uniqueValue.Value);
-                            }
-                        }
-
-                        resultedValues[j] = resultedValue;
-
-
-                        prevIndex = j;
-                        currentStep += stepSize;
-                    }
-                }
-            }
-            return resultedValues;
-        }
-
         public UniqueValue[] GetHistagrammValues(UniqueValue[] p_uniqueValues)
         {
             UniqueValue[] resultedValues;
@@ -112,11 +31,11 @@ namespace LoadTester
                 resultedValues[resultedValues.Length - 1] = maxValue;
                 var step = maxValue.Value / ((double)ChartSize - 1);
 
-                for (int i = 1; i < resultedValues.Length-1; i++)
+                for (int i = 1; i < resultedValues.Length - 1; i++)
                 {
                     var resultedValue = resultedValues[i] = new UniqueValue();
                     resultedValue.Count = 0;
-                    resultedValue.Value = i*step;
+                    resultedValue.Value = i * step;
                 }
 
                 for (int i = 0; i < p_uniqueValues.Length; i++)
@@ -129,6 +48,19 @@ namespace LoadTester
                     resultedValue.Count += uniqueValue.Count;
                 }
             }
+
+            double summ = 0.0;
+            for (int i = 0; i < resultedValues.Length; i++)
+            {
+                summ += resultedValues[0].Count;
+            }
+
+            for (int i = 0; i < resultedValues.Length; i++)
+            {
+                var resultedValue = resultedValues[i];
+                resultedValue.Count = 100 * (double)resultedValue.Count / summ;
+            }
+
             return resultedValues;
         }
 
@@ -167,14 +99,6 @@ namespace LoadTester
 
                 if (uniqueValue.Value > p_maxVal.Value)
                     p_maxVal = uniqueValue;
-            }
-        }
-
-        private void SimpleFillValues(IList<UniqueValue> p_targetCollection, UniqueValue p_value, int p_startIndex, int p_endIndex)
-        {
-            for (int index = p_startIndex; index < p_endIndex; index++)
-            {
-                p_targetCollection[index] = p_value;
             }
         }
 
