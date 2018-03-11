@@ -58,11 +58,12 @@
             chartArea1.AxisX2.ScaleBreakStyle.LineColor = System.Drawing.Color.Maroon;
             chartArea1.AxisX2.TitleForeColor = System.Drawing.Color.ForestGreen;
             chartArea1.AxisY.LabelStyle.ForeColor = System.Drawing.Color.YellowGreen;
+            chartArea1.AxisY.LabelStyle.Format = "{0.00} %";
             chartArea1.AxisY.LineColor = System.Drawing.Color.Green;
             chartArea1.AxisY.MajorGrid.LineColor = System.Drawing.Color.Green;
             chartArea1.AxisY.Minimum = 0D;
             chartArea1.AxisY.ScaleBreakStyle.LineColor = System.Drawing.Color.DarkGreen;
-            chartArea1.AxisY.Title = "Count";
+            chartArea1.AxisY.Title = "Group percents %";
             chartArea1.AxisY.TitleForeColor = System.Drawing.Color.Gold;
             chartArea1.BackColor = System.Drawing.Color.Transparent;
             chartArea1.BorderColor = System.Drawing.Color.ForestGreen;

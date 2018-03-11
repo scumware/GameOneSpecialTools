@@ -52,7 +52,7 @@ namespace LoadTester
             double summ = 0.0;
             for (int i = 0; i < resultedValues.Length; i++)
             {
-                summ += resultedValues[0].Count;
+                summ += resultedValues[i].Count;
             }
 
             for (int i = 0; i < resultedValues.Length; i++)

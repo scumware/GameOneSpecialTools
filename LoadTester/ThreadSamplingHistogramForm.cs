@@ -15,7 +15,7 @@ namespace LoadTester
         public ThreadSamplingHistogramForm()
         {
             InitializeComponent();
-            ChartSize = ThreadsManager.LastMeasurementsCount/50;
+            ChartSize = 250;
 
             m_sampleHistogrammDataFactory = new SampleHistogrammDataFactory(ChartSize);
         }
