@@ -11,6 +11,7 @@ namespace LoadTester
         Sleep,
         EmptyLoop,
         SpinWait,
-        MemoryPressure
+        MemoryPressure,
+        PrepareSampleHistogramm50k
     }
 }

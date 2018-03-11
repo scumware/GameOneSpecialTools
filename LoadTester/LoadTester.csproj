@@ -116,6 +116,7 @@
       <DependentUpon>LabeledCombo.cs</DependentUpon>
     </Compile>
     <Compile Include="SampleHistogrammDataFactory.cs" />
+    <Compile Include="TestData.cs" />
     <Compile Include="ThreadSamplingHistogramForm.cs">
       <SubType>Form</SubType>
     </Compile>

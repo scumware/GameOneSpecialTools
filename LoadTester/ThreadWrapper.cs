@@ -371,6 +371,21 @@ namespace LoadTester
                         }
                         break;
 
+                    case LoadType.PrepareSampleHistogramm50k:
+                    {
+                        SampleHistogrammDataFactory dataFactory = new SampleHistogrammDataFactory(500);
+                        while (m_looper)
+                        {
+                            ++m_looped;
+                            Thread.MemoryBarrier();
+
+                            var sortedUniques = dataFactory.GetSortedUniques(TestData.TestDoubles50k);
+                            var histagrammValues = dataFactory.GetHistagrammValues(sortedUniques);
+                            GC.KeepAlive(histagrammValues);
+                        }
+                    }
+                        break;
+
                     case LoadType.SpinWait:
                         // while (m_looper.Value) PAUSE
                         //not implemented Interlocked.Increment(ref m_looped);
