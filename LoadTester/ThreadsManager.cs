@@ -63,9 +63,19 @@ namespace LoadTester
         }
 
 
-        public static long[] Times
+        public static double[] Times
         {
-            get { return s_times; }
+            get
+            {
+                var result = new double[s_times.Length];
+                var localCopy = (long[])s_times.Clone();
+                for (int i = 0; i < localCopy.Length; i++)
+                {
+                    var ticks = localCopy[i];
+                    result[i] = GetMilisecondsByTicks(ticks);
+                }
+                return result;
+            }
         }
 
         public static IList<ThreadWrapper> ThreadWrappers
@@ -107,7 +117,7 @@ namespace LoadTester
             NativeMethods.SetWaitableTimer(s_waitableTimer, ref pDueTime, lPeriod, null, IntPtr.Zero, false);
 
             for (int index = 0; index < s_times.Length; index++)
-                s_times[index] = -1;
+                s_times[index] = 0;
 
             uint threadId;
             s_ipdatingThreadHandle = StartThread(UpdateSpeeds, out threadId);
@@ -153,14 +163,16 @@ namespace LoadTester
         private static void UpdateSpeeds()
         {
             var intervalIndex = 0;
-            long milliseconds;
             while (false == s_disposed)
             {
                 m_stopwatch.Restart();
+
                 NativeMethods.WaitForSingleObject(s_waitableTimer, NativeMethods.INFINITE);
 
-                milliseconds = m_stopwatch.ElapsedMilliseconds;
-                s_totalElapsed += milliseconds;
+                double milliseconds = m_stopwatch.ElapsedMilliseconds;
+                s_totalElapsed = Stopwatch.GetTimestamp();
+
+
                 if (milliseconds < Period)
                     continue;
 
@@ -168,9 +180,10 @@ namespace LoadTester
                 if (intervalIndex > 0)
                 {
                     var previousTotalElapsed = s_times[intervalIndex - 1];
-                    milliseconds = s_totalElapsed - previousTotalElapsed;
+                    milliseconds = GetMilisecondsByTicks(s_totalElapsed - previousTotalElapsed);
                 }
                 ++intervalIndex;
+
                 bool needShifting = false;
                 if (intervalIndex == s_times.Length)
                 {
@@ -212,7 +225,22 @@ namespace LoadTester
                     var threadWrapper = ThreadWrappers[i];
                     var wrapperLooped = threadWrapper.Looped;
                     double threadWrapperLooped = wrapperLooped - threadWrapper.LoopedPreviously;
-                    threadWrapper.Speeds[intervalIndex] = threadWrapperLooped/milliseconds;
+                    double speed;
+                    if (threadWrapperLooped == 0)
+                        speed = 0;
+                    else
+                    {
+                        if (milliseconds > 0)
+                        {
+                            speed = threadWrapperLooped/milliseconds;
+                        }
+                        else
+                        {
+                            speed = 0;
+                        }
+                    }
+
+                    threadWrapper.Speeds[intervalIndex] = speed;
                     threadWrapper.LoopedPreviously = wrapperLooped;
 
                     if (needShifting)
@@ -223,6 +251,18 @@ namespace LoadTester
             }
             NativeMethods.CloseHandle(s_waitableTimer);
             NativeMethods.CloseHandle((IntPtr) s_ipdatingThreadHandle);
+        }
+
+        private static double GetMilisecondsByTicks(long p_ticks)
+        {
+            var time = (double)p_ticks / (double)Stopwatch.Frequency;
+            return time * 1000;
+        }
+
+        private static long GetTicksByMiliseconds(long p_miliseconds)
+        {
+            var ticks = Stopwatch.Frequency * p_miliseconds;
+            return ticks/1000;
         }
 
         private static void ShiftArrayValues<T>(T[] p_array)

@@ -27,16 +27,17 @@ namespace LoadTester
                 UniqueValue maxValue;
                 FindMinMax(p_uniqueValues, out minValue, out maxValue);
 
-                resultedValues[0] = minValue;
-                resultedValues[resultedValues.Length - 1] = maxValue;
                 var step = maxValue.Value / ((double)ChartSize - 1);
 
-                for (int i = 1; i < resultedValues.Length - 1; i++)
+                for (int i = 0; i < resultedValues.Length; i++)
                 {
                     var resultedValue = resultedValues[i] = new UniqueValue();
                     resultedValue.Count = 0;
                     resultedValue.Value = i * step;
                 }
+                resultedValues[0].Value = minValue.Value;
+                resultedValues[resultedValues.Length - 1].Value = maxValue.Value;
+
 
                 for (int i = 0; i < p_uniqueValues.Length; i++)
                 {

@@ -12,7 +12,7 @@ using LoadTester.Annotations;
 
 namespace LoadTester
 {
-    public class ThreadWrapper : INotifyPropertyChanged, IDisposable
+    public class ThreadWrapper : INotifyPropertyChanged, IDisposable, IThreadWrapper
     {
         public double[] Speeds;
         public long LoopedPreviously;
@@ -62,6 +62,12 @@ namespace LoadTester
             m_loadType = LoadType.Sleep;
             State = ThreadState.Stopped;
             CreateNativeThread(true);
+        }
+
+        public double[] GetSpeeds()
+        {
+            var speeds = (double[])Speeds.Clone();
+            return speeds;
         }
 
         public ulong Afinnity

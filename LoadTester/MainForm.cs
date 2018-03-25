@@ -79,7 +79,13 @@ namespace LoadTester
 
         private void button1_Click( object sender, EventArgs e )
         {
-
+            /*
+            var histogrammForm = new ThreadSamplingHistogramForm();
+            histogrammForm.SeriesColor = Color.Wheat;
+            histogrammForm.ThreadWrapper = new ThreadWrapperTest();
+            histogrammForm.Show(this);
+            return;
+            */
             int count;
             if (sender == btnFill)
             {
@@ -221,7 +227,7 @@ namespace LoadTester
                     if (series.Tag == threadWrapper)
                     {
                         var speeds = (double[])threadWrapper.Speeds.Clone();
-                        var times = (long[])ThreadsManager.Times.Clone();
+                        var times = ThreadsManager.Times;
                         double previousTime = 0.0;
 
                         for (int pointIdex = 0; pointIdex < series.Points.Count; pointIdex++)
@@ -276,7 +282,7 @@ namespace LoadTester
 
             chart1.ChartAreas.SuspendUpdates();
 
-            var times = (long[])ThreadsManager.Times.Clone();
+            var times = (double[])ThreadsManager.Times.Clone();
             double previousTime = 0.0;
             for (int index = 0; index < p_threadWrapper.Speeds.Length; index++)
             {

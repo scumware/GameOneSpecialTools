@@ -22,7 +22,7 @@ namespace LoadTester
 
         private readonly SampleHistogrammDataFactory m_sampleHistogrammDataFactory;
         public Color SeriesColor { get; set; }
-        public ThreadWrapper ThreadWrapper { get; set; }
+        public IThreadWrapper ThreadWrapper { get; set; }
         public int ChartSize;
 
         protected override void OnLoad(EventArgs e)
@@ -32,7 +32,7 @@ namespace LoadTester
         }
 
 
-        private void AddSeries(ThreadWrapper p_threadWrapper)
+        private void AddSeries(IThreadWrapper p_threadWrapper)
         {
             this.chart1.Series.SuspendUpdates();
 
@@ -40,10 +40,10 @@ namespace LoadTester
 
             var newSeries = new Series
             {
-                BorderColor = Color.White,
+                BorderColor = seriesColor,
                 BorderDashStyle = ChartDashStyle.Solid,
                 ChartArea = chart1.ChartAreas[0].Name,
-                ChartType = SeriesChartType.Area,
+                ChartType = SeriesChartType.Column,
                 Color = seriesColor,
                 LabelBackColor = Color.Maroon,
                 LabelForeColor = Color.Lime,
@@ -56,8 +56,6 @@ namespace LoadTester
 
             for (int index = 0; index < ChartSize+ 2; index++)
             {
-                var value = 0;
-
                 var dataPointIndex = newSeries.Points.AddXY(0, 0);
             }
 
@@ -78,7 +76,7 @@ namespace LoadTester
 
         private void UpdateChart()
         {
-            var speeds = (double[])ThreadWrapper.Speeds.Clone();
+            var speeds = ThreadWrapper.GetSpeeds();
             var uniqueValues = m_sampleHistogrammDataFactory.GetSortedUniques(speeds);
             lblUniqueValuesValue.Text = uniqueValues.Length.ToString();
 
@@ -86,47 +84,22 @@ namespace LoadTester
 
             this.chart1.ChartAreas.SuspendUpdates();
             var series = chart1.Series[0];
-            SampleHistogrammDataFactory.UniqueValue lastResultedNotNullValue = null;
             double lastXValue = 0.0;
             double lastYValue = 0.0;
 
-            int i = 1;
-            for (; i < ChartSize-1; i++)
+            int i = 0;
+            for (; i < ChartSize; i++)
             {
                 SampleHistogrammDataFactory.UniqueValue resultedValue = resultedValues[i];
-                    var seriesPoint = series.Points[i];
-                if (resultedValue == null)
-                {
-                    seriesPoint.YValues[0] = 0;
-                    seriesPoint.XValue = lastXValue;
+                var seriesPoint = series.Points[i];
 
-                    continue;
-                }
 
-                lastResultedNotNullValue = resultedValue;
-
-                seriesPoint.YValues[0] = lastYValue= resultedValue.Count;
-                seriesPoint.XValue = lastXValue=  resultedValue.Value;
+                seriesPoint.YValues[0] = resultedValue.Count;
+                seriesPoint.XValue = resultedValue.Value;
             }
 
-            if (lastResultedNotNullValue != null)
-            {
-                var index = ChartSize-1;
-                var dataPoint = series.Points[index];
-                dataPoint.XValue = lastXValue + 1;
-                dataPoint.YValues[0] = 0;
-            }
-
-            var values = resultedValues.Where(p_value => null != p_value);
-            if (values.Any())
-            {
-                double min = values.Min(p_value => p_value.Value);
-                series.Points[0].XValue = min;
-                series.Points[0].YValues[0] = min;
-            }
-
-            this.chart1.ChartAreas.ResumeUpdates();
             this.chart1.ChartAreas[0].RecalculateAxesScale();
+            this.chart1.ChartAreas.ResumeUpdates();
         }
     }
 }
